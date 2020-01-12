@@ -28,11 +28,14 @@ public class Player : KinematicBody {
     public override void _Ready() {
         _head = GetNode<Spatial>("Head");
         _camera = GetNode<Camera>("Head/Camera");
+
+        Input.SetMouseMode(Input.MouseMode.Captured);
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta) {
-
+        if (Input.IsActionJustPressed("ui_cancel"))
+            Input.SetMouseMode(Input.MouseMode.Visible);
     }
 
     public override void _Input(InputEvent input) {
