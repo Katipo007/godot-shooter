@@ -24,10 +24,16 @@ public class Player : KinematicBody {
     private Spatial _head;
     private Camera _camera;
 
+    private RayCast _weapon_raycast;
+    private RayCast _interaction_raycast;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready() {
         _head = GetNode<Spatial>("Head");
         _camera = GetNode<Camera>("Head/Camera");
+
+        _weapon_raycast = GetNode<RayCast>("Head/Camera/WeaponRayCast");
+        _interaction_raycast = GetNode<RayCast>("Head/Camera/InteractRayCast");
 
         Input.SetMouseMode(Input.MouseMode.Captured);
     }
