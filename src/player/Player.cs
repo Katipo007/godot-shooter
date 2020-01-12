@@ -38,6 +38,7 @@ public class Player : KinematicBody {
     public override void _Input(InputEvent input) {
         InputEventMouseMotion motion = input as InputEventMouseMotion;
 
+        // handle mouse look
         if (motion != null) {
             _head.RotateY(Mathf.Deg2Rad(-motion.Relative.x * mouse_sensitivity * (mouse_invert_x ? -1 : 1)));
 
@@ -72,7 +73,14 @@ public class Player : KinematicBody {
         direction = direction.Normalized();
 
         _velocity = _velocity.LinearInterpolate(direction * _speed, _acceleration * delta);
+        // gravity
+        _velocity.y -= _gravity;
 
-        _velocity = MoveAndSlide(_velocity);
+        // jumping
+        if (Input.IsActionJustPressed("jump") && this.IsOnFloor()) {
+            _velocity.y += _jump_power;
+        }
+
+        _velocity = MoveAndSlide(_velocity, Vector3.Up);
     }
 }
