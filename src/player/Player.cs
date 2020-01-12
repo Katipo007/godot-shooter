@@ -11,6 +11,14 @@ public class Player : KinematicBody {
     [Export]
     private float _jump_power = 30.0f;
 
+    // TODO: Move these to settings
+    [Export]
+    private float mouse_sensitivity = 0.3f;
+    [Export]
+    private bool mouse_invert_x = false;
+    [Export]
+    private bool mouse_invert_y = false;
+
     private Vector3 _velocity;
 
     private Spatial _head;
@@ -25,6 +33,19 @@ public class Player : KinematicBody {
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(float delta) {
 
+    }
+
+    public override void _Input(InputEvent input) {
+        InputEventMouseMotion motion = input as InputEventMouseMotion;
+
+        if (motion != null) {
+            _head.RotateY(Mathf.Deg2Rad(-motion.Relative.x * mouse_sensitivity * (mouse_invert_x ? -1 : 1)));
+
+            var x_delta = -motion.Relative.y * mouse_sensitivity * (mouse_invert_y ? -1 : 1);
+            if (((_camera.RotationDegrees.x + x_delta) > -90.0f) && ((_camera.RotationDegrees.x + x_delta) < 90.0f)) {
+                _camera.RotateX(Mathf.Deg2Rad(x_delta));
+            }
+        }
     }
 
     public override void _PhysicsProcess(float delta) {
