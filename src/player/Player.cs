@@ -81,9 +81,10 @@ public class Player : KinematicBody {
         // normalize direction
         direction = direction.Normalized();
 
+        var old_y_velocity = _velocity.y;
         _velocity = _velocity.LinearInterpolate(direction * _speed, _acceleration * delta);
         // gravity
-        _velocity.y -= _gravity;
+        _velocity.y = old_y_velocity - _gravity;
 
         // jumping
         if (Input.IsActionJustPressed("jump") && this.IsOnFloor()) {
