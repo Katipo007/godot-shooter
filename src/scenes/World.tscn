@@ -57,7 +57,7 @@ script = ExtResource( 2 )
 shape = SubResource( 2 )
 
 [node name="Light" type="OmniLight" parent="Lightswitch/StaticBody"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00338, 0.0361304 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00338, 0.0361303 )
 light_color = Color( 0.956863, 0.917647, 0.345098, 1 )
 
 [node name="Target" parent="." instance=ExtResource( 3 )]
@@ -68,6 +68,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.72978, 1.86731, -6.87615 )
 
 [node name="Target3" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6018, 5.18359, -6.49958 )
+
+[node name="Target4" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.15094, 4.66985, -6.49958 )
 
 [node name="HUD" parent="." instance=ExtResource( 4 )]
 
