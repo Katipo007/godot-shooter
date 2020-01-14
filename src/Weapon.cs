@@ -16,6 +16,8 @@ public class Weapon : Node {
 
     protected RayCast _raycast;
 
+    protected Label _ammoLabel;
+
     public Weapon() {
         _currentAmmo = _clipSize;
     }
@@ -23,10 +25,17 @@ public class Weapon : Node {
     // Called when the node enters the scene tree for the first time.
     public override void _Ready() {
         _raycast = GetNode<RayCast>("../Head/Camera/WeaponRayCast");
+        _ammoLabel = GetNode<Label>("/root/World/HUD/AmmoLabel");
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     async public override void _Process(float delta) {
+
+        if (_reloading)
+            _ammoLabel.Text = $"Ammo:\nReloading...";
+        else
+            _ammoLabel.Text = $"Ammo:\n{_currentAmmo} / {_clipSize}";
+
         // fire weapon
         if (Input.IsActionJustPressed("primary_fire") && _canFire) {
             if (_currentAmmo > 0 && !_reloading) {
