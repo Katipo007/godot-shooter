@@ -39,16 +39,9 @@ public class Weapon : Node {
         // fire weapon
         if (Input.IsActionJustPressed("primary_fire") && _canFire) {
             if (_currentAmmo > 0 && !_reloading) {
-                GD.Print("Fired weapon");
-                _canFire = false;
-                _currentAmmo -= 1;
-                CheckCollision();
+                Fire();
 
-                var timer = GetTree().CreateTimer(_fireRate);
-                await ToSignal(timer, "timeout");
-
-                _canFire = true;
-
+                // start reloading if we used our last bullet
                 if (_currentAmmo == 0)
                     Reload();
             }
@@ -71,6 +64,18 @@ public class Weapon : Node {
                 GD.Print("Killed " + (collider as Node).Name);
             }
         }
+    }
+
+    async private void Fire() {
+        GD.Print("Fired weapon");
+        _canFire = false;
+        _currentAmmo -= 1;
+        CheckCollision();
+
+        var timer = GetTree().CreateTimer(_fireRate);
+        await ToSignal(timer, "timeout");
+
+        _canFire = true;
     }
 
     async private void Reload() {
