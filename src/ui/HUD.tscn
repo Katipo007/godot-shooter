@@ -13,3 +13,15 @@ margin_left = -248.0
 margin_top = -85.0
 text = "Ammo
 2/2"
+
+[node name="InteractionLabel" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -172.0
+margin_top = -39.0
+margin_right = 172.0
+text = "Interaction text"
+align = 1
+valign = 1
