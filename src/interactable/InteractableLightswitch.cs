@@ -16,13 +16,8 @@ public class InteractableLightswitch : Interactable {
     public override void _Ready() {
         _light = GetNode<Light>("Light");
         _on = _onByDefault;
+        SetLightEnergy();
     }
-
-    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
-    //      
-    //  }
 
     public override void Interact() {
         _on = !_on;
