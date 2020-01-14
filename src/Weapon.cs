@@ -57,6 +57,10 @@ public class Weapon : Node {
                 Reload();
             }
         }
+
+        if (Input.IsActionJustPressed("reload") && !_reloading) {
+            Reload();
+        }
     }
 
     private void CheckCollision() {
