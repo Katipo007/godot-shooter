@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://src/interactable/Interactable.cs" type="Script" id=2]
+[ext_resource path="res://src/interactable/InteractableLightswitch.cs" type="Script" id=2]
 [ext_resource path="res://src/enemies/target/Target.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/ui/HUD.tscn" type="PackedScene" id=4]
+[ext_resource path="res://default_env.tres" type="Environment" id=5]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 20, 1, 20 )
@@ -55,6 +56,10 @@ script = ExtResource( 2 )
 [node name="CollisionShape" type="CollisionShape" parent="Lightswitch/StaticBody"]
 shape = SubResource( 2 )
 
+[node name="Light" type="OmniLight" parent="Lightswitch/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00338, 0.0361304 )
+light_color = Color( 0.956863, 0.917647, 0.345098, 1 )
+
 [node name="Target" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.52895, 1.81051, 4.47375 )
 
@@ -65,3 +70,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.72978, 1.86731, -6.87615 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.6018, 5.18359, -6.49958 )
 
 [node name="HUD" parent="." instance=ExtResource( 4 )]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource( 5 )

@@ -3,11 +3,11 @@ using Godot;
 
 public class Interactable : Node {
 
-    public string GetInteractionText() {
+    public virtual string GetInteractionText() {
         return "interact";
     }
 
-    public void Interact() {
+    public virtual void Interact() {
         GD.Print($"Interacted with {Name}");
     }
 }
