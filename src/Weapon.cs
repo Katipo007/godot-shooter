@@ -3,18 +3,18 @@ using Godot;
 
 public class Weapon : Node {
     [Export]
-    private float _fireRate = 0.5f;
+    protected float _fireRate = 0.5f;
     [Export]
-    private uint _clipSize = 5;
+    protected uint _clipSize = 5;
     [Export]
-    private float _reloadRate = 1;
+    protected float _reloadRate = 1;
 
-    private uint _currentAmmo;
+    protected uint _currentAmmo;
 
-    private bool _canFire = true;
-    private bool _reloading = false;
+    protected bool _canFire = true;
+    protected bool _reloading = false;
 
-    private RayCast _raycast;
+    protected RayCast _raycast;
 
     public Weapon() {
         _currentAmmo = _clipSize;
