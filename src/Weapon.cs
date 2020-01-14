@@ -14,13 +14,15 @@ public class Weapon : Node {
     private bool _canFire = true;
     private bool _reloading = false;
 
+    private RayCast _raycast;
+
     public Weapon() {
         _currentAmmo = _clipSize;
     }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready() {
-
+        _raycast = GetNode<RayCast>("../Head/Camera/WeaponRayCast");
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -31,6 +33,7 @@ public class Weapon : Node {
                 GD.Print("Fired weapon");
                 _canFire = false;
                 _currentAmmo -= 1;
+                CheckCollision();
 
                 var timer = GetTree().CreateTimer(_fireRate);
                 await ToSignal(timer, "timeout");
@@ -43,6 +46,16 @@ public class Weapon : Node {
             // reload
             else if (!_reloading) {
                 Reload();
+            }
+        }
+    }
+
+    private void CheckCollision() {
+        if (_raycast.IsColliding()) {
+            var collider = _raycast.GetCollider();
+            if ((collider as Node).IsInGroup("Enemies")) {
+                (collider as Node).QueueFree();
+                GD.Print("Killed " + (collider as Node).Name);
             }
         }
     }
