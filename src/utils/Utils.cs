@@ -72,6 +72,7 @@ public static class Utils {
             return null;
         }
 
+        GD.Print($"Loaded json file [{filepath}]");
         return resultJson.Result as GC.Dictionary;
     }
 }
