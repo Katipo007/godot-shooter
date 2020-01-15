@@ -11,6 +11,7 @@ public class Settings {
 
         // create new settings file if none exists
         if (!file.FileExists("settings.json")) {
+            GD.Print("Creating settings file from default...");
             File defaultFile = new File();
             defaultFile.Open("res://data/default_settings.json", (int) File.ModeFlags.Read);
             var defaultContents = defaultFile.GetAsText();
