@@ -1,5 +1,7 @@
 using System;
 using Godot;
+using SC = System.Collections.Generic;
+using GC = Godot.Collections;
 
 /// <summary>
 /// Class of helper utility functions
@@ -41,5 +43,35 @@ public static class Utils {
 
     public static void CaptureMouse() {
         Input.SetMouseMode(Input.MouseMode.Captured);
+    }
+
+    public static void PutJsonFile(SC.Dictionary<string, object> data, string filepath, bool sort = true) {
+        throw new NotImplementedException();
+    }
+
+    public static void PutJsonFile(GC.Dictionary data, string filepath, bool sort = true) {
+
+    }
+
+    public static GC.Dictionary GetJsonFile(string filepath) {
+        File file = new File();
+        Error e = file.Open(filepath, (int) File.ModeFlags.Read);
+
+        if (e != Error.Ok) {
+            GD.PrintErr("Failed to open json file [", filepath, "]: ", e);
+            return null;
+        }
+
+        var text = file.GetAsText();
+        file.Close();
+
+        var resultJson = JSON.Parse(text);
+
+        if (resultJson.Error != Error.Ok) {
+            GD.PrintErr("Error parsing json file [", filepath, "]: ", resultJson.Error, resultJson.ErrorLine, resultJson.ErrorString);
+            return null;
+        }
+
+        return resultJson.Result as GC.Dictionary;
     }
 }
