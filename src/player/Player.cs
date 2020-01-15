@@ -35,7 +35,9 @@ public class Player : KinematicBody {
         _weapon_raycast = GetNode<RayCast>("Head/Camera/WeaponRayCast");
         _interaction_raycast = GetNode<RayCast>("Head/Camera/InteractRayCast");
 
-        Input.SetMouseMode(Input.MouseMode.Captured);
+        Utils.CaptureMouse();
+        mouse_invert_x = (bool) GameState.Instance.Settings["controls"]["invertMouseX"];
+        mouse_invert_y = (bool) GameState.Instance.Settings["controls"]["invertMouseY"];
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
