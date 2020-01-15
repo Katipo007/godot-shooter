@@ -9,4 +9,8 @@ public class Adventure : Node {
     public void HandleEvent(GameEvent gameEvent) {
         throw new NotImplementedException();
     }
+
+    public void Pause() {
+        throw new NotImplementedException();
+    }
 }
