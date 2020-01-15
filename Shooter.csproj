@@ -58,6 +58,8 @@
     <Compile Include="src\player\Player.cs" />
     <Compile Include="src\sound\Speaker.cs" />
     <Compile Include="src\sound\Sound.cs" />
+    <Compile Include="src\tests\AdventureTests.cs" />
+    <Compile Include="src\utils\Test.cs" />
     <Compile Include="src\utils\Utils.cs" />
     <Compile Include="src\Weapon.cs" />
     <Compile Include="src\weapons\Shotgun.cs" />
