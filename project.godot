@@ -19,6 +19,10 @@ config/name="Shooter"
 run/main_scene="res://src/scenes/World.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+GameState="*res://src/autoload/GameState.cs"
+
 [input]
 
 move_forward={
