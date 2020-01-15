@@ -51,4 +51,8 @@ public class Settings {
     public void Save() {
         Utils.PutJsonFile((GC.Dictionary) this.Config, "settings.json", true);
     }
+
+    public GC.Dictionary<string, object> this [string i] {
+        get { return Config[i]; }
+    }
 }

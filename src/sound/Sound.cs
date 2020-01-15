@@ -32,12 +32,12 @@ public class Sound {
     }
 
     public static void RefreshVolume() {
-        float musicVolume = Sound.VolumeMath(GameState.Instance.Settings.MusicVolume);
+        float musicVolume = Sound.VolumeMath((float) GameState.Instance.Settings["sound"]["musicVolume"]);
         GameState.Instance.Jukebox.VolumeDb = musicVolume;
     }
 
     public static float VolumeMath(float val) {
-        val *= GameState.Instance.Settings.masterVolume;
+        val *= (float) GameState.Instance.Settings["sound"]["masterVolume"];
         val *= 100f;
 
         float remainder = 100f - val; // distance from 100%
