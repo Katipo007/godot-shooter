@@ -6,24 +6,26 @@ using GC = Godot.Collections;
 public class Settings {
     public GC.Dictionary<string, GC.Dictionary<string, object>> Config { get; private set; }
 
+    public static readonly string Filepath = "user://settings.json";
+
     public void Load() {
         File file = new File();
 
         // create new settings file if none exists
-        if (!file.FileExists("settings.json")) {
+        if (!file.FileExists(Filepath)) {
             GD.Print("Creating settings file from default...");
             File defaultFile = new File();
             defaultFile.Open("res://data/default_settings.json", (int) File.ModeFlags.Read);
             var defaultContents = defaultFile.GetAsText();
             defaultFile.Close();
 
-            file.Open("settings.json", (int) File.ModeFlags.Write);
+            file.Open(Filepath, (int) File.ModeFlags.Write);
             file.StoreString(defaultContents);
             file.Close();
         }
 
         // load the file
-        this.Config = new GC.Dictionary<string, GC.Dictionary<string, object>>(Utils.GetJsonFile("settings.json"));
+        this.Config = new GC.Dictionary<string, GC.Dictionary<string, object>>(Utils.GetJsonFile(Filepath));
 
         // check for loading errors
         if (this.Config == null) {
@@ -50,7 +52,7 @@ public class Settings {
     }
 
     public void Save() {
-        Utils.PutJsonFile((GC.Dictionary) this.Config, "settings.json", true);
+        Utils.PutJsonFile((GC.Dictionary) this.Config, Filepath, true);
     }
 
     public GC.Dictionary<string, object> this [string i] {
