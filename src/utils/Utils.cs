@@ -50,7 +50,16 @@ public static class Utils {
     }
 
     public static void PutJsonFile(GC.Dictionary data, string filepath, bool sort = true) {
+        File file = new File();
+        Error e = file.Open(filepath, (int) File.ModeFlags.Write);
 
+        if (e != Error.Ok) {
+            GD.PrintErr("Failed to open json file [", filepath, "]: ", e);
+        }
+
+        file.StoreString(JSON.Print(data, "  ", sort));
+        file.Close();
+        GD.Print($"Wrote json file [{filepath}]");
     }
 
     public static GC.Dictionary GetJsonFile(string filepath) {
