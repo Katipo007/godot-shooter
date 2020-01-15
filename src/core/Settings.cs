@@ -36,6 +36,13 @@ public class Settings {
         // TODO: Check for and remove/add any missing/extra keys
     }
 
+    /// <summary>
+    /// Update a setting
+    /// </summary>
+    /// <param name="section"></param>
+    /// <param name="item"></param>
+    /// <param name="value"></param>
+    /// <returns>whether the section/key existed and was overwritten</returns>
     public bool ChangeItem(string section, string item, object value) {
         if (Config.ContainsKey(section)) {
             if (Config[section].ContainsKey(item)) {
@@ -48,6 +55,27 @@ public class Settings {
         } else {
             GD.PushWarning($"Section '{section}' does not exist in the settings");
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Get a value with an optional default paramater if the section or item does not exist
+    /// </summary>
+    /// <param name="section"></param>
+    /// <param name="item"></param>
+    /// <param name="value"></param>
+    /// <param name="@default"></param>
+    /// <returns></returns>
+    public object Get(string section, string item, object value, object @default = null) {
+        if (Config.ContainsKey(section)) {
+            if (Config[section].ContainsKey(item)) {
+                return Config[section][item];
+            } else {
+                return default;
+            }
+        } else {
+            GD.PushWarning($"Section '{section}' does not exist in the settings");
+            return default;
         }
     }
 
