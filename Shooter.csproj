@@ -52,6 +52,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\interactable\Interactable.cs" />
     <Compile Include="src\interactable\InteractableLightswitch.cs" />
+    <Compile Include="src\menus\IMenu.cs" />
+    <Compile Include="src\menus\MenuFactory.cs" />
     <Compile Include="src\player\InteractRayCast.cs" />
     <Compile Include="src\player\Player.cs" />
     <Compile Include="src\sound\Speaker.cs" />
