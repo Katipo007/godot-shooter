@@ -1,0 +1,11 @@
+{
+    "sound": {
+        "masterVolume": 1.0,
+        "musicVolume": 1.0,
+        "sfxVolume": 1.0
+    },
+    "controls": {
+        "invertMouseX": false,
+        "invertMouseY": false
+    }
+}

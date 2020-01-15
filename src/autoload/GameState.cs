@@ -37,7 +37,7 @@ public class GameState : Node {
 
         ChangeMenu(MenuFactory.Menus.Main);
         InitJukebox();
-        InitSettings();
+        this.Settings.Load();
 
         if (this.Random == null) {
             this.Random = new System.Random();
