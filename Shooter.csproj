@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\adventure\Adventure.cs" />
     <Compile Include="src\autoload\GameState.cs" />
     <Compile Include="src\interactable\Interactable.cs" />
     <Compile Include="src\interactable\InteractableLightswitch.cs" />
