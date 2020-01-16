@@ -4,30 +4,30 @@
 [ext_resource path="res://assets/fonts/source_code_pro/source_code_pro.tres" type="Resource" id=2]
 [ext_resource path="res://src/phios/DisplayMesh.cs" type="Script" id=3]
 
-[sub_resource type="SpatialMaterial" id=4]
+[sub_resource type="SpatialMaterial" id=1]
 flags_unshaded = true
 flags_do_not_receive_shadows = true
 flags_disable_ambient_light = true
 albedo_color = Color( 0.211765, 0.192157, 0.192157, 1 )
 
-[sub_resource type="Curve" id=5]
+[sub_resource type="Curve" id=2]
 _data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
 
-[sub_resource type="ArrayMesh" id=1]
+[sub_resource type="ArrayMesh" id=3]
 
 [node name="Display" type="Spatial"]
 script = ExtResource( 1 )
 Font = ExtResource( 2 )
-BackgroundMaterial = SubResource( 4 )
-ColorLerpCurve = SubResource( 5 )
+BackgroundMaterial = SubResource( 1 )
+ColorLerpCurve = SubResource( 2 )
 _nInitialLayers = 1
 
 [node name="Foreground" type="MeshInstance" parent="."]
-mesh = SubResource( 1 )
+mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
 [node name="Background" type="MeshInstance" parent="."]
-mesh = SubResource( 1 )
+mesh = SubResource( 3 )
 script = ExtResource( 3 )
 
 [node name="Camera" type="Camera" parent="."]
