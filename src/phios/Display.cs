@@ -59,8 +59,6 @@ namespace phios {
             Background = GetNode<DisplayMesh>("Background");
             Foreground = GetNode<DisplayMesh>("Foreground");
 
-            GD.Print(this.Font, this.Font.BitmapFontXml);
-
             // calculate quad size
             _quadWidth = 1f;
             _quadHeight = (Font.GlyphHeight / Font.GlyphWidth) * (Font.QuadHeightScale);
@@ -270,7 +268,8 @@ namespace phios {
                             for (int i = 0; i < 4; i++) {
                                 int vert = (y * DisplayWidth + x) * 4 + i;
                                 // update display mesh vertices, uvs and colours
-                                Foreground.MeshVertices[vert] = zero3;
+                                Foreground.MeshVertices[vert].x = 0;
+                                Foreground.MeshVertices[vert].y = 0;
                                 Foreground.MeshUVs[vert] = zero2;
                                 Foreground.MeshColors[vert] = ClearColor;
                                 Background.MeshColors[vert] = cell != null ? cell.BackgroundColor : ClearColor;
@@ -283,7 +282,8 @@ namespace phios {
                                 int vert = (y * DisplayWidth + x) * 4 + i;
 
                                 // update display mesh vertices, uvs and colours
-                                Foreground.MeshVertices[vert] = new Vector3(x * _quadWidth + glyph.Vertices[i].x * _quadWidth, -y * _quadHeight + glyph.Vertices[i].y * _quadHeight - _quadHeight, 0f);
+                                Foreground.MeshVertices[vert].x = x * _quadWidth + glyph.Vertices[i].x * _quadWidth;
+                                Foreground.MeshVertices[vert].y = -y * _quadHeight + glyph.Vertices[i].y * _quadHeight - _quadHeight;
                                 Foreground.MeshUVs[vert] = glyph.UVs[i];
                                 Foreground.MeshColors[vert] = cell.ForegroundColor;
                                 Background.MeshColors[vert] = cell.BackgroundColor;
@@ -301,6 +301,7 @@ namespace phios {
                     var image = GetViewport().GetTexture().GetData();
                     image.FlipY();
                     image.SavePng("user://screenshots/phiosScreenshot.png");
+                    image = null;
                 }
             }
         }
