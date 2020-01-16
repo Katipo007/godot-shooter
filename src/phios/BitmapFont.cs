@@ -33,26 +33,29 @@ namespace phios {
             }
 
             while (xml.Read() == Error.Ok) {
-                GD.Print($"XML: {xml.GetNodeName()}");
+                if (xml.GetNodeType() != XMLParser.NodeType.Element)
+                    continue;
+
+                string nodeName = xml.GetNodeName();
+                if (nodeName == "")
+                    continue;
+
                 // parse texture size
-                if (xml.GetNodeName() == "common") {
+                if (nodeName == "common") {
                     TextureSize = float.Parse(xml.GetNamedAttributeValue("scaleW"));
-                    GD.Print($"Got font common. TextureSize: {TextureSize}");
                 }
 
                 // parse glyph
-                else if (xml.GetNodeName() == "char") {
+                else if (nodeName == "char") {
                     string glyphString = char.ConvertFromUtf32(int.Parse(xml.GetNamedAttributeValue("id")));
-                    GD.Print($"Found glyph '{glyphString}'");
-
                     // new glyph
                     if (!_glyphs.ContainsKey(glyphString)) {
                         var glyph = new BitmapFontGlyph();
                         glyph.GlyphString = glyphString;
                         glyph.x = float.Parse(xml.GetNamedAttributeValue("x"));
                         glyph.y = float.Parse(xml.GetNamedAttributeValue("y"));
-                        glyph.xOffset = float.Parse(xml.GetNamedAttributeValue("xOffset"));
-                        glyph.yOffset = float.Parse(xml.GetNamedAttributeValue("yOffset"));
+                        glyph.xOffset = float.Parse(xml.GetNamedAttributeValue("xoffset"));
+                        glyph.yOffset = float.Parse(xml.GetNamedAttributeValue("yoffset"));
                         glyph.Width = float.Parse(xml.GetNamedAttributeValue("width"));
                         glyph.Height = float.Parse(xml.GetNamedAttributeValue("height"));
                         _glyphs.Add(glyphString, glyph);
