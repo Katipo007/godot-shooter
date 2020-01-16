@@ -16,6 +16,7 @@ namespace phios {
         private ArrayMesh _mesh;
         private MeshDataTool _mdt = new MeshDataTool();
         private int[] _indexes;
+        private GC.Array _arrays;
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready() {
@@ -79,6 +80,9 @@ namespace phios {
                 _indexes[quad * 6 + 4] = quad * 4 + 2;
                 _indexes[quad * 6 + 5] = quad * 4 + 0;
             }
+
+            _arrays = new GC.Array();
+            _arrays.Resize((int) Mesh.ArrayType.Max);
         }
 
         public void UpdateMesh() {
@@ -87,13 +91,11 @@ namespace phios {
                 _mesh.SurfaceRemove(0);
 
             // create a new surface from the arrays
-            var arrays = new GC.Array();
-            arrays.Resize((int) Mesh.ArrayType.Max);
-            arrays[(int) Mesh.ArrayType.Vertex] = MeshVertices;
-            arrays[(int) Mesh.ArrayType.TexUv] = MeshUVs;
-            arrays[(int) Mesh.ArrayType.Color] = MeshColors;
-            arrays[(int) Mesh.ArrayType.Index] = _indexes;
-            _mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
+            _arrays[(int) Mesh.ArrayType.Vertex] = MeshVertices;
+            _arrays[(int) Mesh.ArrayType.TexUv] = MeshUVs;
+            _arrays[(int) Mesh.ArrayType.Color] = MeshColors;
+            _arrays[(int) Mesh.ArrayType.Index] = _indexes;
+            _mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, _arrays);
         }
 
     } // end class
