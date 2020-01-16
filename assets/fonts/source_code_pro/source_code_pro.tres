@@ -10,11 +10,12 @@ flags_do_not_receive_shadows = true
 flags_disable_ambient_light = true
 params_specular_mode = 4
 albedo_texture = ExtResource( 1 )
+uv1_scale = Vector3( 1, -1, 1 )
 
 [resource]
 script = ExtResource( 2 )
 BitmapFontXml = "res://assets/fonts/source_code_pro/source_code_pro_semibold_bitmap.fnt"
 BitmapFontMaterial = SubResource( 1 )
 GlyphHeight = 72.0
-GlyphWidth = 57.0
+GlyphWidth = 34.0
 QuadHeightScale = 1.0

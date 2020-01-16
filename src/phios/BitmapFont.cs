@@ -25,6 +25,7 @@ namespace phios {
         private SC.Dictionary<string, BitmapFontGlyph> _glyphs = new SC.Dictionary<string, BitmapFontGlyph>();
 
         public void Init() {
+            GD.Print("phios.BitmapFont is being setup");
             XMLParser xml = new XMLParser();
             Error e = xml.Open(BitmapFontXml);
 
