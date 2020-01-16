@@ -5,17 +5,10 @@ using SC = System.Collections.Generic;
 
 namespace phios {
     public class Display : Spatial {
-
-        [Export]
+        [Export(PropertyHint.ResourceType, "BitmapFont")]
         public BitmapFont Font { get; private set; }
 
         public Camera MainCamera { get; private set; }
-
-        [Export]
-        public PackedScene DisplayQuadMesh { get; private set; }
-
-        [Export]
-        public Material ForegroundMaterial { get; private set; }
 
         [Export]
         public Material BackgroundMaterial { get; private set; }
@@ -57,26 +50,28 @@ namespace phios {
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready() {
+            if (!Font.Loaded)
+                GD.PushError("Font is not loaded yet!");
+
             MainCamera = GetNode<Camera>("Camera");
+            Background = GetNode<DisplayMesh>("Background");
+            Foreground = GetNode<DisplayMesh>("Foreground");
+
+            GD.Print(this.Font, this.Font.BitmapFontXml);
 
             // calculate quad size
             _quadWidth = 1f;
-            _quadHeight = Font.Height; // (font.GetGlyphHeight() / font.GetGlyphWidth()) * (font.useRexPaintFont ? font.rexPaintQuadHeightScale : font.quadHeightScale);
+            _quadHeight = (Font.GlyphHeight / Font.GlyphWidth) * (Font.QuadHeightScale);
 
             // instantiate quads
-            // TODO
-
-            // add quads to combine instances
-            // TODO
-
-            // combine quads to foreground and background
-            // TODO
+            Background.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0.001f);
+            Foreground.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
+            Background.MaterialOverride = BackgroundMaterial;
+            Foreground.MaterialOverride = Font.BitmapFontMaterial;
 
             // update camera orthographic size
-            MainCamera.SetOrthogonal(Mathf.Max(DisplayHeight * _quadHeight * 0.5f, Background.Translation.y), 0, 2);
-
-            // destroy original quads
-            // TODO
+            MainCamera.SetOrthogonal(Mathf.Max(DisplayHeight * _quadHeight * 2.0f, Background.Translation.y), 0, 2);
+            MainCamera.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * _quadWidth * 0.5f, 0.5f);
 
             GD.Print($"Phios Display size: {DisplayWidth}x{DisplayHeight}");
 
@@ -102,6 +97,8 @@ namespace phios {
 
             // we are now initialized
             Initialized = true;
+
+            GetCell(0, 1, 1).SetContent("H", Colors.Red, Colors.Black);
         }
 
         private Cell CreateCell(int layerIndex, int x, int y) {
@@ -109,6 +106,7 @@ namespace phios {
             Cell cell = new Cell();
             cell.Layer = layerIndex;
             cell.Position = new Vector2(x, y);
+            cell.Owner = this;
             _cellList.AddLast(cell);
             return cell;
         }
@@ -254,7 +252,43 @@ namespace phios {
                 }
 
                 // update display meshes
-                // TODO
+                for (int y = 0; y < DisplayHeight; y++) {
+                    for (int x = 0; x < DisplayWidth; x++) {
+                        // get top layer for cell
+                        var topLayersForCell = _topLayers[x, y];
+
+                        // get cell at top layer
+                        Cell cell = null;
+                        if (topLayersForCell.First != null) {
+                            cell = _cells[topLayersForCell.Last.Value][x, y];
+                        }
+
+                        // empty cell
+                        if (cell == null || cell.Content.Empty()) {
+                            for (int i = 0; i < 4; i++) {
+                                int vert = (y * DisplayWidth + x) * 4 + i;
+                                // update display mesh vertices, uvs and colours
+                                Foreground.MeshVertices[vert] = zero3;
+                                Foreground.MeshUVs[vert] = zero2;
+                                Foreground.MeshColors[vert] = ClearColor;
+                                Background.MeshColors[vert] = cell != null ? cell.BackgroundColor : ClearColor;
+                            }
+                        }
+                        // filled cell
+                        else {
+                            var glyph = Font.GetGlyph(cell.Content);
+                            for (int i = 0; i < 4; i++) {
+                                int vert = (y * DisplayWidth + x) * 4 + i;
+
+                                // update display mesh vertices, uvs and colours
+                                Foreground.MeshVertices[vert] = new Vector3(x * _quadWidth + glyph.Vertices[i].x * _quadWidth, -y * _quadHeight + glyph.Vertices[i].y * _quadHeight - _quadHeight, 0f);
+                                Foreground.MeshUVs[vert] = glyph.UVs[i];
+                                Foreground.MeshColors[vert] = cell.ForegroundColor;
+                                Background.MeshColors[vert] = cell.BackgroundColor;
+                            }
+                        }
+                    }
+                }
 
                 // apply display mesh updates
                 Background.UpdateMesh();

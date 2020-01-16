@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=4 format=2]
+
+[ext_resource path="res://assets/fonts/source_code_pro/source_code_pro_semibold_bitmap_0.png" type="Texture" id=1]
+[ext_resource path="res://src/phios/BitmapFont.cs" type="Script" id=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+flags_transparent = true
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+params_specular_mode = 4
+albedo_texture = ExtResource( 1 )
+
+[resource]
+script = ExtResource( 2 )
+BitmapFontXml = "res://assets/fonts/source_code_pro/source_code_pro_semibold_bitmap.fnt"
+BitmapFontMaterial = SubResource( 1 )
+QuadHeightScale = 1.0
+GlyphWidth = 57.0
+GlyphHeight = 72.0
