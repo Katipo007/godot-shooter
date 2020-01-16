@@ -35,7 +35,7 @@ public class GameState : Node {
             this.QueueFree();
         }
 
-        ChangeMenu(MenuFactory.Menus.Main);
+        // ChangeMenu(MenuFactory.Menus.Main);
         InitJukebox();
         this.Settings = new Settings();
         this.Settings.Load();

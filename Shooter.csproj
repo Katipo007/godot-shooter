@@ -57,6 +57,13 @@
     <Compile Include="src\interactable\InteractableLightswitch.cs" />
     <Compile Include="src\menus\IMenu.cs" />
     <Compile Include="src\menus\MenuFactory.cs" />
+    <Compile Include="src\phios\actions\IClickAction.cs" />
+    <Compile Include="src\phios\actions\IDragAction.cs" />
+    <Compile Include="src\phios\actions\IHoverAction.cs" />
+    <Compile Include="src\phios\actions\IScrollAction.cs" />
+    <Compile Include="src\phios\Cell.cs" />
+    <Compile Include="src\phios\Display.cs" />
+    <Compile Include="src\phios\DisplayMesh.cs" />
     <Compile Include="src\player\InteractRayCast.cs" />
     <Compile Include="src\player\Player.cs" />
     <Compile Include="src\sound\Speaker.cs" />
