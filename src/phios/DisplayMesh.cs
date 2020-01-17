@@ -27,10 +27,8 @@ namespace phios {
 
             Display = GetParent<Display>();
 
+            this.Mesh = new ArrayMesh();
             this._mesh = this.Mesh as ArrayMesh;
-            if (this._mesh == null) {
-                throw new Exception("Display mesh must be of type ArrayMesh");
-            }
         }
 
         public void Initialize(int width, int height, float quadWidth, float quadHeight, float z) {
