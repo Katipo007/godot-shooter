@@ -64,14 +64,14 @@ namespace phios {
             _quadHeight = (Font.GlyphHeight / Font.GlyphWidth) * (Font.QuadHeightScale);
 
             // instantiate quads
-            Background.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0.001f);
+            Background.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
             Foreground.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
             Background.MaterialOverride = BackgroundMaterial;
             Foreground.MaterialOverride = Font.BitmapFontMaterial;
 
             // update camera orthographic size
             MainCamera.SetOrthogonal(Mathf.Max(DisplayHeight * _quadHeight * 2.0f, Background.Translation.y), 0, 2);
-            MainCamera.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * _quadWidth * 0.5f, 0.5f);
+            MainCamera.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * -_quadHeight * 0.5f, 0.5f);
 
             GD.Print($"Phios Display size: {DisplayWidth}x{DisplayHeight}");
 
