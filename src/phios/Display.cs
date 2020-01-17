@@ -264,7 +264,7 @@ namespace phios {
                         }
 
                         // empty cell
-                        if (cell == null || cell.Content.Empty()) {
+                        if (cell == null || cell.Content == "") {
                             for (int i = 0; i < 4; i++) {
                                 int vert = (y * DisplayWidth + x) * 4 + i;
                                 // update display mesh vertices, uvs and colours
