@@ -90,6 +90,6 @@ environment = ExtResource( 5 )
 [node name="Display" parent="." instance=ExtResource( 6 )]
 transform = Transform( -0.00642594, 0, -0.998151, 0, 0.0920105, 0, 0.105517, 0, -0.0607868, 12.9941, 6.80315, -1.77503 )
 DisplayHeight = 20
-ClearColor = Color( 0, 0, 0, 0.509804 )
 DisplayWidth = 60
 BackgroundMaterial = SubResource( 5 )
+ClearColor = Color( 0, 0, 0, 0.509804 )
