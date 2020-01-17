@@ -41,9 +41,9 @@ namespace phios {
             var len = width * height;
             for (int quad = 0; quad < len; quad++) {
                 float x1 = (quad % width) * quadWidth;
-                float y1 = (quad / width) * quadHeight;
+                float y1 = (quad / width) * -quadHeight;
                 float x2 = x1 + quadWidth;
-                float y2 = y1 + quadHeight;
+                float y2 = y1 - quadHeight;
 
                 int p = quad * 4;
                 MeshVertices[p] = new Vector3(x1, y1, z);
