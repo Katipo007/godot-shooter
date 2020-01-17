@@ -12,11 +12,11 @@ namespace phios {
         [Export]
         public readonly Material BitmapFontMaterial;
         [Export]
-        public readonly float GlyphHeight;
+        public readonly float GlyphHeight = 0f;
         [Export]
-        public readonly float GlyphWidth;
+        public readonly float GlyphWidth = 0f;
         [Export]
-        public float QuadHeightScale;
+        public float QuadHeightScale = 1f;
 
         public float TextureSize { get; private set; }
 
