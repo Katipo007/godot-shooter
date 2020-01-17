@@ -29,7 +29,7 @@ public class Weapon : Node {
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
-    async public override void _Process(float delta) {
+    public override void _Process(float delta) {
 
         if (_reloading)
             _ammoLabel.Text = $"Ammo:\nReloading...";
@@ -66,7 +66,7 @@ public class Weapon : Node {
         }
     }
 
-    async private void Fire() {
+    private async void Fire() {
         GD.Print("Fired weapon");
         _canFire = false;
         _currentAmmo -= 1;
@@ -78,7 +78,7 @@ public class Weapon : Node {
         _canFire = true;
     }
 
-    async private void Reload() {
+    private async void Reload() {
         GD.Print("Reloading");
         _reloading = true;
 
