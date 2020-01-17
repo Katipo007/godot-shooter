@@ -13,7 +13,9 @@ albedo_color = Color( 0.211765, 0.192157, 0.192157, 1 )
 [sub_resource type="Curve" id=2]
 _data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
 
-[sub_resource type="ArrayMesh" id=3]
+[sub_resource type="ArrayMesh" id=5]
+
+[sub_resource type="ArrayMesh" id=4]
 
 [node name="Display" type="Spatial"]
 script = ExtResource( 1 )
@@ -23,11 +25,11 @@ ColorLerpCurve = SubResource( 2 )
 _nInitialLayers = 1
 
 [node name="Foreground" type="MeshInstance" parent="."]
-mesh = SubResource( 3 )
+mesh = SubResource( 5 )
 script = ExtResource( 3 )
 
 [node name="Background" type="MeshInstance" parent="."]
-mesh = SubResource( 3 )
+mesh = SubResource( 4 )
 script = ExtResource( 3 )
 
 [node name="Camera" type="Camera" parent="."]
