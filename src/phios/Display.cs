@@ -21,6 +21,8 @@ namespace phios {
         public int DisplayWidth { get; private set; } = 80;
         [Export]
         public int DisplayHeight { get; private set; } = 40;
+        [Export]
+        public readonly bool AutoSize = false;
 
         [Export]
         public Curve ColorLerpCurve { get; set; }
@@ -122,6 +124,13 @@ namespace phios {
             // calculate quad size
             _quadWidth = 1f;
             _quadHeight = (Font.GlyphHeight / Font.GlyphWidth) * (Font.QuadHeightScale);
+
+            // derive display height from width
+            if (AutoSize) {
+                var screen = GetViewport();
+                int maxDisplayHeight = Mathf.RoundToInt((screen.Size.y / screen.Size.x) * DisplayWidth / _quadHeight);
+                DisplayHeight = maxDisplayHeight;
+            }
 
             // instantiate quads
             Background.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
