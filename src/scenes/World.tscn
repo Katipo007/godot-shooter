@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/interactable/InteractableLightswitch.cs" type="Script" id=2]
@@ -19,6 +19,15 @@ albedo_color = Color( 0, 1, 0.156863, 1 )
 [sub_resource type="CubeMesh" id=4]
 material = SubResource( 3 )
 size = Vector3( 1, 1, 1 )
+
+[sub_resource type="SpatialMaterial" id=5]
+resource_local_to_scene = true
+render_priority = -1
+flags_transparent = true
+flags_unshaded = true
+flags_do_not_receive_shadows = true
+flags_disable_ambient_light = true
+vertex_color_use_as_albedo = true
 
 [node name="World" type="Spatial"]
 
@@ -80,5 +89,7 @@ environment = ExtResource( 5 )
 
 [node name="Display" parent="." instance=ExtResource( 6 )]
 transform = Transform( -0.00642594, 0, -0.998151, 0, 0.0920105, 0, 0.105517, 0, -0.0607868, 12.9941, 6.80315, -1.77503 )
-DisplayWidth = 60
 DisplayHeight = 20
+ClearColor = Color( 0, 0, 0, 0.509804 )
+DisplayWidth = 60
+BackgroundMaterial = SubResource( 5 )
