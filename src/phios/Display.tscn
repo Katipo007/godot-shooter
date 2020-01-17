@@ -13,9 +13,33 @@ vertex_color_use_as_albedo = true
 [sub_resource type="Curve" id=2]
 _data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
 
-[sub_resource type="ArrayMesh" id=5]
+[sub_resource type="ArrayMesh" id=3]
+surfaces/0 = {
+"aabb": AABB( 0, -84.7059, 0, 80, 84.7059, 1e-005 ),
+"array_data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 160, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 160, 66, 106, 105, 169, 194, 0, 0, 0, 0, 0, 0, 0, 0, 106, 105, 169, 194, 0, 0, 0, 0 ),
+"array_index_data": PoolByteArray( 0, 0, 1, 0, 2, 0, 2, 0, 3, 0, 0, 0 ),
+"blend_shape_data": [  ],
+"format": 97537,
+"index_count": 6,
+"name": "Editor Preview",
+"primitive": 4,
+"skeleton_aabb": [  ],
+"vertex_count": 4
+}
 
 [sub_resource type="ArrayMesh" id=4]
+surfaces/0 = {
+"aabb": AABB( 0, -84.7059, -0.001, 80, 84.7059, 9.99996e-006 ),
+"array_data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 111, 18, 131, 186, 0, 0, 160, 66, 0, 0, 0, 0, 111, 18, 131, 186, 0, 0, 160, 66, 106, 105, 169, 194, 111, 18, 131, 186, 0, 0, 0, 0, 106, 105, 169, 194, 111, 18, 131, 186 ),
+"array_index_data": PoolByteArray( 0, 0, 1, 0, 2, 0, 2, 0, 3, 0, 0, 0 ),
+"blend_shape_data": [  ],
+"format": 97537,
+"index_count": 6,
+"name": "Editor Preview",
+"primitive": 4,
+"skeleton_aabb": [  ],
+"vertex_count": 4
+}
 
 [node name="Display" type="Spatial"]
 script = ExtResource( 1 )
@@ -25,11 +49,13 @@ ColorLerpCurve = SubResource( 2 )
 _nInitialLayers = 1
 
 [node name="Foreground" type="MeshInstance" parent="."]
-mesh = SubResource( 5 )
+mesh = SubResource( 3 )
+material/0 = null
 script = ExtResource( 3 )
 
 [node name="Background" type="MeshInstance" parent="."]
 mesh = SubResource( 4 )
+material/0 = null
 script = ExtResource( 3 )
 
 [node name="Camera" type="Camera" parent="."]

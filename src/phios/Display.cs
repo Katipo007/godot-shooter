@@ -4,6 +4,7 @@ using GC = Godot.Collections;
 using SC = System.Collections.Generic;
 
 namespace phios {
+    [Tool]
     public class Display : Spatial {
         [Export(PropertyHint.ResourceType, "BitmapFont")]
         public BitmapFont Font { get; private set; }
@@ -46,11 +47,69 @@ namespace phios {
         private Vector2 zero2 = Vector2.Zero;
 
         public Display() {
-            
+
+        }
+
+        [Export]
+        private bool _EditorUpdate {
+            get {
+                return false;
+            }
+            set {
+                if (!Engine.EditorHint)
+                    return;
+
+                var warning = _GetConfigurationWarning();
+                if (warning != "") {
+                    GD.PrintErr(warning);
+                    return;
+                }
+
+                if (Font == null || !(Font is BitmapFont))
+                    return;
+
+                Background = GetNode("Background") as DisplayMesh;
+                Foreground = GetNode("Foreground") as DisplayMesh;
+
+                _quadWidth = 1f;
+                _quadHeight = Mathf.Clamp(((float) Font.Get("GlyphHeight") / (float) Font.Get("GlyphWidth")) * ((float) Font.Get("QuadHeightScale")), 0f, 100000f);
+
+                if (Background != null) {
+                    Background.UpdateEditor(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
+                } else
+                    GD.PrintErr("Failed to get Background DisplayMesh");
+
+                if (Foreground != null) {
+                    Foreground.UpdateEditor(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
+                } else
+                    GD.PrintErr("Failed to get Foreground DisplayMesh");
+
+                GD.Print($"{Name} Display updated");
+            }
+        }
+
+        public override string _GetConfigurationWarning() {
+            if (Font == null || !(Font is BitmapFont)) {
+                return "No font is set!";
+            }
+
+            if (!HasNode("Background") || !(GetNode("Background") is MeshInstance))
+                return "Missing a 'MeshInstance' with name 'Background'";
+
+            if (!HasNode("Foreground") || !(GetNode("Foreground") is MeshInstance))
+                return "Missing a 'MeshInstance' with name 'Foreground'";
+
+            if (!HasNode("Camera") || !(GetNode("Camera") is Camera))
+                return "Missing a 'Camera' with name 'Camera'";
+
+            return "";
         }
 
         // Called when the node enters the scene tree for the first time.
         public override void _Ready() {
+            if (Engine.EditorHint)
+                return;
+
             Font.Init();
 
             if (!Font.Loaded)
@@ -254,7 +313,7 @@ namespace phios {
 
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(float delta) {
-            if (Initialized) {
+            if (!Engine.EditorHint && Initialized) {
                 // update cells
                 SC.LinkedListNode<Cell> cellNode = _cellList.First;
                 while (cellNode != null) {
