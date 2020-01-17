@@ -3,7 +3,8 @@ using Godot;
 
 namespace phios {
     public interface IDragAction {
-        void OnDragDown();
+        void OnDragStart();
+        void OnDragEnd();
         void OnDragDelta(Vector2 delta);
     }
 }
