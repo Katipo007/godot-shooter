@@ -66,19 +66,12 @@ namespace phios {
                 MeshColors[p] = defaultColor;
                 ++p;
 
-                // _indexes[quad * 6 + 0] = quad * 4 + 0;
-                // _indexes[quad * 6 + 1] = quad * 4 + 1;
-                // _indexes[quad * 6 + 2] = quad * 4 + 3;
-                // _indexes[quad * 6 + 3] = quad * 4 + 1;
-                // _indexes[quad * 6 + 4] = quad * 4 + 0;
-                // _indexes[quad * 6 + 5] = quad * 4 + 2;
-
                 _indexes[quad * 6 + 0] = quad * 4 + 0;
-                _indexes[quad * 6 + 1] = quad * 4 + 3;
-                _indexes[quad * 6 + 2] = quad * 4 + 1;
+                _indexes[quad * 6 + 1] = quad * 4 + 1;
+                _indexes[quad * 6 + 2] = quad * 4 + 3;
                 _indexes[quad * 6 + 3] = quad * 4 + 1;
-                _indexes[quad * 6 + 4] = quad * 4 + 2;
-                _indexes[quad * 6 + 5] = quad * 4 + 0;
+                _indexes[quad * 6 + 4] = quad * 4 + 0;
+                _indexes[quad * 6 + 5] = quad * 4 + 2;
             }
 
             _arrays = new GC.Array();
