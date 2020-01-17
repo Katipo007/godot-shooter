@@ -86,6 +86,11 @@ namespace phios {
                 } else
                     GD.PrintErr("Failed to get Foreground DisplayMesh");
 
+                // initialize collision shape
+                CollisionShape collisionShape = GetNode<CollisionShape>("StaticBody/CollisionShape");
+                (collisionShape.Shape as BoxShape).SetExtents(new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * _quadHeight * 0.5f, 0.05f));
+                collisionShape.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * -_quadHeight * 0.5f, 0);
+
                 GD.Print($"{Name} Display updated");
             }
         }
@@ -103,6 +108,19 @@ namespace phios {
 
             if (!HasNode("Camera") || !(GetNode("Camera") is Camera))
                 return "Missing a 'Camera' with name 'Camera'";
+
+            if (!HasNode("StaticBody") || !(GetNode("StaticBody") is StaticBody))
+                return "Missing 'StaticBody' with name 'StaticBody'";
+            else {
+                var staticBody = GetNode<StaticBody>("StaticBody");
+
+                var collisionShape = staticBody.GetNode("CollisionShape") as CollisionShape;
+                if (collisionShape == null)
+                    return "No collision shape";
+                if (collisionShape.Shape == null || !(collisionShape.Shape is BoxShape)) {
+                    return "Invalid collision shape, requires a box shape.";
+                }
+            }
 
             return "";
         }
@@ -132,11 +150,16 @@ namespace phios {
                 DisplayHeight = maxDisplayHeight;
             }
 
-            // instantiate quads
+            // initialize display meshes
             Background.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
             Foreground.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
             Background.MaterialOverride = BackgroundMaterial;
             Foreground.MaterialOverride = Font.BitmapFontMaterial;
+
+            // initialize collision shape
+            CollisionShape collisionShape = GetNode<CollisionShape>("StaticBody/CollisionShape");
+            (collisionShape.Shape as BoxShape).SetExtents(new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * _quadHeight * 0.5f, 0.05f));
+            collisionShape.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * -_quadHeight * 0.5f, 0);
 
             // update camera orthographic size
             MainCamera.SetOrthogonal(Mathf.Max(DisplayHeight * _quadHeight * 1.0f, Background.Translation.y), 0, 2);

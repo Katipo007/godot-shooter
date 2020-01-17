@@ -100,6 +100,7 @@ phios_scroll_down={
 
 3d_physics/layer_1="Physics"
 3d_physics/layer_2="Interactables"
+3d_physics/layer_3="Phios Displays"
 
 [rendering]
 
