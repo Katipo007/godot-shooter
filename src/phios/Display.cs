@@ -130,7 +130,7 @@ namespace phios {
             Foreground.MaterialOverride = Font.BitmapFontMaterial;
 
             // update camera orthographic size
-            MainCamera.SetOrthogonal(Mathf.Max(DisplayHeight * _quadHeight * 2.0f, Background.Translation.y), 0, 2);
+            MainCamera.SetOrthogonal(Mathf.Max(DisplayHeight * _quadHeight * 1.0f, Background.Translation.y), 0, 2);
             MainCamera.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * -_quadHeight * 0.5f, 0.5f);
 
             GD.Print($"Phios Display size: {DisplayWidth}x{DisplayHeight}");
@@ -168,7 +168,7 @@ namespace phios {
             GetCell(0, 1, 0).SetContent(".", Colors.White, Colors.Red);
             GetCell(0, 0, 1).SetContent(".", Colors.White, Colors.Red);
 
-            GetCell(0, DisplayWidth-1, DisplayHeight-1).SetContent("X", Colors.Red, Colors.Black);
+            GetCell(0, DisplayWidth - 1, DisplayHeight - 1).SetContent("X", Colors.Red, Colors.Black);
         }
 
         private Cell CreateCell(int layerIndex, int x, int y) {
