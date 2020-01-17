@@ -1,22 +1,24 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/phios/Display.cs" type="Script" id=1]
 [ext_resource path="res://assets/fonts/source_code_pro/source_code_pro.tres" type="Resource" id=2]
 [ext_resource path="res://src/phios/DisplayMesh.cs" type="Script" id=3]
 
-[sub_resource type="SpatialMaterial" id=1]
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
+
+[sub_resource type="SpatialMaterial" id=2]
+resource_local_to_scene = true
+flags_transparent = true
 flags_unshaded = true
 flags_do_not_receive_shadows = true
 flags_disable_ambient_light = true
 vertex_color_use_as_albedo = true
 
-[sub_resource type="Curve" id=2]
-_data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
-
 [sub_resource type="ArrayMesh" id=3]
 surfaces/0 = {
-"aabb": AABB( 0, -84.7059, 0, 80, 84.7059, 1e-005 ),
-"array_data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 160, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 160, 66, 106, 105, 169, 194, 0, 0, 0, 0, 0, 0, 0, 0, 106, 105, 169, 194, 0, 0, 0, 0 ),
+"aabb": AABB( 0, -42.3529, 0, 80, 42.353, 1e-005 ),
+"array_data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 160, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 160, 66, 106, 105, 41, 194, 0, 0, 0, 0, 0, 0, 0, 0, 106, 105, 41, 194, 0, 0, 0, 0 ),
 "array_index_data": PoolByteArray( 0, 0, 1, 0, 2, 0, 2, 0, 3, 0, 0, 0 ),
 "blend_shape_data": [  ],
 "format": 97537,
@@ -29,8 +31,8 @@ surfaces/0 = {
 
 [sub_resource type="ArrayMesh" id=4]
 surfaces/0 = {
-"aabb": AABB( 0, -84.7059, -0.001, 80, 84.7059, 9.99996e-006 ),
-"array_data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 111, 18, 131, 186, 0, 0, 160, 66, 0, 0, 0, 0, 111, 18, 131, 186, 0, 0, 160, 66, 106, 105, 169, 194, 111, 18, 131, 186, 0, 0, 0, 0, 106, 105, 169, 194, 111, 18, 131, 186 ),
+"aabb": AABB( 0, -42.3529, -0.001, 80, 42.353, 9.99996e-006 ),
+"array_data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 111, 18, 131, 186, 0, 0, 160, 66, 0, 0, 0, 0, 111, 18, 131, 186, 0, 0, 160, 66, 106, 105, 41, 194, 111, 18, 131, 186, 0, 0, 0, 0, 106, 105, 41, 194, 111, 18, 131, 186 ),
 "array_index_data": PoolByteArray( 0, 0, 1, 0, 2, 0, 2, 0, 3, 0, 0, 0 ),
 "blend_shape_data": [  ],
 "format": 97537,
@@ -41,12 +43,15 @@ surfaces/0 = {
 "vertex_count": 4
 }
 
+[sub_resource type="Environment" id=5]
+background_energy = 0.0
+
 [node name="Display" type="Spatial"]
 script = ExtResource( 1 )
 Font = ExtResource( 2 )
-BackgroundMaterial = SubResource( 1 )
-ColorLerpCurve = SubResource( 2 )
 _nInitialLayers = 1
+ColorLerpCurve = SubResource( 1 )
+BackgroundMaterial = SubResource( 2 )
 
 [node name="Foreground" type="MeshInstance" parent="."]
 mesh = SubResource( 3 )
@@ -60,5 +65,6 @@ script = ExtResource( 3 )
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5 )
+environment = SubResource( 5 )
 projection = 1
 near = 0.01
