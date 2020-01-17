@@ -26,7 +26,8 @@ namespace phios {
 
         public bool Initialized { get; private set; } = false;
 
-        public Color ClearColor { get; private set; }
+        [Export]
+        public Color ClearColor { get; private set; } = Color.Color8(0, 0, 0, 255);
 
         private float _quadWidth;
         private float _quadHeight;
@@ -45,7 +46,7 @@ namespace phios {
         private Vector2 zero2 = Vector2.Zero;
 
         public Display() {
-            ClearColor = Color.Color8(0, 0, 0, 0);
+            
         }
 
         // Called when the node enters the scene tree for the first time.
