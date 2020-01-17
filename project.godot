@@ -23,6 +23,11 @@ config/icon="res://icon.png"
 
 GameState="*res://src/autoload/GameState.cs"
 
+[display]
+
+window/size/resizable=false
+window/size/fullscreen=true
+
 [input]
 
 move_forward={
