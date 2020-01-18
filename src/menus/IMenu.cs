@@ -1,6 +1,7 @@
 using System;
 using Godot;
 
-public interface IMenu {
+public interface IMenu
+{
 
 }

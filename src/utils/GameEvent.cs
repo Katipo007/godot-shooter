@@ -1,10 +1,12 @@
 using System;
 
-public class GameEvent {
+public class GameEvent
+{
     public string[] args;
     public Types type;
 
-    public enum Types {
+    public enum Types
+    {
         /// <summary>
         /// Default
         /// </summary>
@@ -21,18 +23,21 @@ public class GameEvent {
         Pause
     }
 
-    public GameEvent() {
+    public GameEvent()
+    {
         this.type = Types.None;
         this.args = new string[0];
     }
 
-    public static GameEvent PauseEvent() {
+    public static GameEvent PauseEvent()
+    {
         GameEvent ge = new GameEvent();
         ge.type = Types.Pause;
         return ge;
     }
 
-    public static GameEvent ActorDiedEvent(string dead, string killer) {
+    public static GameEvent ActorDiedEvent(string dead, string killer)
+    {
         GameEvent ge = new GameEvent();
         ge.type = Types.ActorDied;
         ge.args = new string[2];

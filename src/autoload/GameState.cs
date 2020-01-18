@@ -7,7 +7,8 @@ using Godot;
 /// Pseudo-singleton, focal point for the state of the game.
 /// Should be the root node of the game, if this is null things won't work
 /// </summary>
-public class GameState : Node {
+public class GameState : Node
+{
     /// <summary>
     /// Get the singleton instance
     /// </summary>
@@ -21,17 +22,22 @@ public class GameState : Node {
     public Player Player { get; private set; }
     public Adventure Adventure { get; private set; }
 
-    public enum GameModes {
+    public enum GameModes
+    {
         None,
         Adventure
     }
 
     // Called when the node enters the scene tree for the first time.
-    public override void _Ready() {
+    public override void _Ready()
+    {
         // enforce the singleton handler
-        if (Instance == null) {
+        if (Instance == null)
+        {
             Instance = this;
-        } else {
+        }
+        else
+        {
             this.QueueFree();
         }
 
@@ -40,22 +46,27 @@ public class GameState : Node {
         this.Settings = new Settings();
         this.Settings.Load();
 
-        if (this.Random == null) {
+        if (this.Random == null)
+        {
             this.Random = new System.Random();
         }
     }
 
-    public void PerformTests() {
+    public void PerformTests()
+    {
         Test.Init();
         AdventureTests.RunTests();
     }
 
-    public void Quit() {
+    public void Quit()
+    {
         GetTree().Quit();
     }
 
-    public void InitJukebox() {
-        if (this.Jukebox == null) {
+    public void InitJukebox()
+    {
+        if (this.Jukebox == null)
+        {
             this.Jukebox = new AudioStreamPlayer();
             AddChild(this.Jukebox);
         }
@@ -66,12 +77,14 @@ public class GameState : Node {
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public static Node InstanceScene(string path) {
+    public static Node InstanceScene(string path)
+    {
         byte[] bytes = Encoding.Default.GetBytes(path);
         path = Encoding.UTF8.GetString(bytes);
         PackedScene packedScene = (PackedScene) GD.Load(path);
 
-        if (packedScene == null) {
+        if (packedScene == null)
+        {
             GD.PrintErr("Path [" + path + "] is invalid.");
             return null;
         }
@@ -81,8 +94,10 @@ public class GameState : Node {
     /// <summary>
     /// Removes game nodes/variables
     /// </summary>
-    public void ClearGame() {
-        if (this.Adventure != null) {
+    public void ClearGame()
+    {
+        if (this.Adventure != null)
+        {
             this.Adventure.QueueFree();
             this.Adventure = null;
         }
@@ -90,19 +105,23 @@ public class GameState : Node {
         Input.SetMouseMode(Input.MouseMode.Visible);
     }
 
-    public void QuitToMainMenu() {
+    public void QuitToMainMenu()
+    {
         ChangeMenu(MenuFactory.Menus.Main);
         ClearGame();
     }
 
-    public void LocalAdventure() {
+    public void LocalAdventure()
+    {
         ChangeMenu(MenuFactory.Menus.None);
         this.Adventure = new Adventure();
         AddChild(this.Adventure);
     }
 
-    public void ChangeMenu(MenuFactory.Menus menu) {
-        if (_activeMenu != null) {
+    public void ChangeMenu(MenuFactory.Menus menu)
+    {
+        if (_activeMenu != null)
+        {
             IMenu menuInstance = _activeMenu as IMenu;
 
             _activeMenu.QueueFree();
@@ -112,12 +131,14 @@ public class GameState : Node {
         _activeMenu = MenuFactory.Create(menu, this);
     }
 
-    public void HandleEvent(GameEvent gameEvent) {
+    public void HandleEvent(GameEvent gameEvent)
+    {
         if (this.Adventure != null)
             this.Adventure.HandleEvent(gameEvent);
     }
 
-    public void Event(GameEvent gameEvent) {
+    public void Event(GameEvent gameEvent)
+    {
         HandleEvent(gameEvent);
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using Godot;
 
-namespace phios {
-    public class BitmapFontGlyph {
+namespace Phios
+{
+    public class BitmapFontGlyph
+    {
         public string GlyphString;
         public float x;
         public float y;
@@ -13,7 +15,8 @@ namespace phios {
         public Vector3[] Vertices = new Vector3[4];
         public Vector2[] UVs = new Vector2[4];
 
-        public void RecalculateGlyphMetrics(float glyphWidth, float glyphHeight, float textureSize, float bleed) {
+        public void RecalculateGlyphMetrics(float glyphWidth, float glyphHeight, float textureSize, float bleed)
+        {
 
             // calculate glyph vertices
             Vertices[0] = new Vector3(0f + xOffset / glyphWidth, 0f + yOffset / glyphHeight, 0f);

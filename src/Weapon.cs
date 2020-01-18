@@ -1,7 +1,8 @@
 using System;
 using Godot;
 
-public class Weapon : Node {
+public class Weapon : Node
+{
     [Export]
     protected float _fireRate = 0.5f;
     [Export]
@@ -18,18 +19,21 @@ public class Weapon : Node {
 
     protected Label _ammoLabel;
 
-    public Weapon() {
+    public Weapon()
+    {
         _currentAmmo = _clipSize;
     }
 
     // Called when the node enters the scene tree for the first time.
-    public override void _Ready() {
+    public override void _Ready()
+    {
         _raycast = GetNode<RayCast>("../Head/Camera/WeaponRayCast");
         _ammoLabel = GetNode<Label>("/root/World/HUD/AmmoLabel");
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(float delta) {
+    public override void _Process(float delta)
+    {
 
         if (_reloading)
             _ammoLabel.Text = $"Ammo:\nReloading...";
@@ -37,8 +41,10 @@ public class Weapon : Node {
             _ammoLabel.Text = $"Ammo:\n{_currentAmmo} / {_clipSize}";
 
         // fire weapon
-        if (Input.IsActionJustPressed("primary_fire") && _canFire) {
-            if (_currentAmmo > 0 && !_reloading) {
+        if (Input.IsActionJustPressed("primary_fire") && _canFire)
+        {
+            if (_currentAmmo > 0 && !_reloading)
+            {
                 Fire();
 
                 // start reloading if we used our last bullet
@@ -46,27 +52,33 @@ public class Weapon : Node {
                     Reload();
             }
             // reload
-            else if (!_reloading) {
+            else if (!_reloading)
+            {
                 Reload();
             }
         }
 
-        if (Input.IsActionJustPressed("reload") && !_reloading) {
+        if (Input.IsActionJustPressed("reload") && !_reloading)
+        {
             Reload();
         }
     }
 
-    private void CheckCollision() {
-        if (_raycast.IsColliding()) {
+    private void CheckCollision()
+    {
+        if (_raycast.IsColliding())
+        {
             var collider = _raycast.GetCollider();
-            if ((collider as Node).IsInGroup("Enemies")) {
+            if ((collider as Node).IsInGroup("Enemies"))
+            {
                 (collider as Node).QueueFree();
                 GD.Print("Killed " + (collider as Node).Name);
             }
         }
     }
 
-    private async void Fire() {
+    private async void Fire()
+    {
         GD.Print("Fired weapon");
         _canFire = false;
         _currentAmmo -= 1;
@@ -78,7 +90,8 @@ public class Weapon : Node {
         _canFire = true;
     }
 
-    private async void Reload() {
+    private async void Reload()
+    {
         GD.Print("Reloading");
         _reloading = true;
 

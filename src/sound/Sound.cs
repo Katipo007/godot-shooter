@@ -1,16 +1,21 @@
 using Godot;
 
-public class Sound {
-    public enum Effects {
+public class Sound
+{
+    public enum Effects
+    {
         None
     }
 
-    public enum Music {
+    public enum Music
+    {
         None
     }
 
-    public static string MusicFile(Music music) {
-        switch (music) {
+    public static string MusicFile(Music music)
+    {
+        switch (music)
+        {
             case Music.None:
                 return null;
 
@@ -20,8 +25,10 @@ public class Sound {
         }
     }
 
-    public static string EffectFile(Effects effect) {
-        switch (effect) {
+    public static string EffectFile(Effects effect)
+    {
+        switch (effect)
+        {
             case Effects.None:
                 return null;
 
@@ -31,12 +38,14 @@ public class Sound {
         }
     }
 
-    public static void RefreshVolume() {
+    public static void RefreshVolume()
+    {
         float musicVolume = Sound.VolumeMath((float) GameState.Instance.Settings["sound"]["musicVolume"]);
         GameState.Instance.Jukebox.VolumeDb = musicVolume;
     }
 
-    public static float VolumeMath(float val) {
+    public static float VolumeMath(float val)
+    {
         val *= (float) GameState.Instance.Settings["sound"]["masterVolume"];
         val *= 100f;
 
@@ -45,7 +54,8 @@ public class Sound {
         return val;
     }
 
-    public static void PlayMusic(Music track) {
+    public static void PlayMusic(Music track)
+    {
         if (track == Music.None)
             return;
 
@@ -56,7 +66,8 @@ public class Sound {
         GameState.Instance.Jukebox.Playing = true;
     }
 
-    public static void PauseSong() {
+    public static void PauseSong()
+    {
         if (GameState.Instance.Jukebox == null)
             return;
 

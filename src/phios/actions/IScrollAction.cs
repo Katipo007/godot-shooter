@@ -1,8 +1,10 @@
 using System;
 using Godot;
 
-namespace phios {
-    public interface IScrollAction {
+namespace Phios
+{
+    public interface IScrollAction
+    {
         void OnScrollDelta(int delta);
     }
 }

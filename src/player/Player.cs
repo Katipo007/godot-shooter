@@ -1,7 +1,8 @@
 using System;
 using Godot;
 
-public class Player : KinematicBody {
+public class Player : KinematicBody
+{
     [Export]
     private float _speed = 10.0f;
     [Export]
@@ -28,7 +29,8 @@ public class Player : KinematicBody {
     private RayCast _interaction_raycast;
 
     // Called when the node enters the scene tree for the first time.
-    public override void _Ready() {
+    public override void _Ready()
+    {
         _head = GetNode<Spatial>("Head");
         _camera = GetNode<Camera>("Head/Camera");
 
@@ -41,42 +43,53 @@ public class Player : KinematicBody {
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(float delta) {
+    public override void _Process(float delta)
+    {
         if (Input.IsActionJustPressed("ui_cancel"))
             Input.SetMouseMode(Input.MouseMode.Visible);
     }
 
-    public override void _Input(InputEvent input) {
+    public override void _Input(InputEvent input)
+    {
         InputEventMouseMotion motion = input as InputEventMouseMotion;
 
         // handle mouse look
-        if (motion != null) {
+        if (motion != null)
+        {
             _head.RotateY(Mathf.Deg2Rad(-motion.Relative.x * mouse_sensitivity * (mouse_invert_x ? -1 : 1)));
 
             var x_delta = -motion.Relative.y * mouse_sensitivity * (mouse_invert_y ? -1 : 1);
-            if (((_camera.RotationDegrees.x + x_delta) > -90.0f) && ((_camera.RotationDegrees.x + x_delta) < 90.0f)) {
+            if (((_camera.RotationDegrees.x + x_delta) > -90.0f) && ((_camera.RotationDegrees.x + x_delta) < 90.0f))
+            {
                 _camera.RotateX(Mathf.Deg2Rad(x_delta));
             }
         }
     }
 
-    public override void _PhysicsProcess(float delta) {
+    public override void _PhysicsProcess(float delta)
+    {
         var head_basis = _head.GetGlobalTransform().basis;
 
         var direction = new Vector3();
 
         // forward-back movement
-        if (Input.IsActionPressed("move_forward")) {
+        if (Input.IsActionPressed("move_forward"))
+        {
             // -Z is forward in Godot
             direction -= head_basis.z;
-        } else if (Input.IsActionPressed("move_backward")) {
+        }
+        else if (Input.IsActionPressed("move_backward"))
+        {
             direction += head_basis.z;
         }
 
         // left-right movement
-        if (Input.IsActionPressed("move_left")) {
+        if (Input.IsActionPressed("move_left"))
+        {
             direction -= head_basis.x;
-        } else if (Input.IsActionPressed("move_right")) {
+        }
+        else if (Input.IsActionPressed("move_right"))
+        {
             direction += head_basis.x;
         }
 
@@ -89,7 +102,8 @@ public class Player : KinematicBody {
         _velocity.y = old_y_velocity - _gravity;
 
         // jumping
-        if (Input.IsActionJustPressed("jump") && this.IsOnFloor()) {
+        if (Input.IsActionJustPressed("jump") && this.IsOnFloor())
+        {
             _velocity.y += _jump_power;
         }
 

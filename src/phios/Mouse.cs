@@ -1,8 +1,10 @@
 using System;
 using Godot;
 
-namespace phios {
-    public class Mouse : Node {
+namespace Phios
+{
+    public class Mouse : Node
+    {
         [Export]
         public bool HideNativeCursor { get; set; } = false;
 
@@ -29,11 +31,11 @@ namespace phios {
         /// <summary>
         /// Cursor position on the screen
         /// </summary>
-        public Vector2 Position {
-            get {
-                return _position;
-            }
-            set {
+        public Vector2 Position
+        {
+            get { return _position; }
+            set
+            {
                 _position.Set(
                     value.x.Clamp(0, Display.DisplayWidth),
                     value.y.Clamp(0, Display.DisplayHeight)
@@ -65,7 +67,8 @@ namespace phios {
         private Display Display;
 
         // Called when the node enters the scene tree for the first time.
-        public override void _Ready() {
+        public override void _Ready()
+        {
             if (HideNativeCursor)
                 Utils.CaptureMouse();
 
@@ -74,17 +77,19 @@ namespace phios {
             Initialized = true;
         }
 
-        public override string _GetConfigurationWarning() {
-            if (GetParentOrNull<Display>() == null) {
+        public override string _GetConfigurationWarning()
+        {
+            if (GetParentOrNull<Display>() == null)
                 return "Parent node must be a Display";
-            }
 
             return "";
         }
 
         // Called every frame. 'delta' is the elapsed time since the previous frame.
-        public override void _Process(float delta) {
-            if (Initialized) {
+        public override void _Process(float delta)
+        {
+            if (Initialized)
+            {
 
                 // clamp mouse position to bounds
                 _position.Set(
@@ -92,7 +97,8 @@ namespace phios {
                     Utils.Clamp(_position.y, Display.DisplayHeight * ScreenMin.y, Display.DisplayHeight * ScreenMax.y));
 
                 // clear current cell
-                if (_currentCell != null) {
+                if (_currentCell != null)
+                {
                     // get background color to clear to
                     Color clearColor = Display.GetBackgroundColorForCell(
                         (int) _position.x,
@@ -134,23 +140,29 @@ namespace phios {
                     "");
 
                 // hover
-                if (!_dragging) {
-                    for (int i = Display.GetNumLayers() - 1; i >= 0; i--) {
+                if (!_dragging)
+                {
+                    for (int i = Display.GetNumLayers() - 1; i >= 0; i--)
+                    {
                         Cell cellHover = Display.GetCell(i, (int) _position.x, (int) _position.y);
 
                         // hover on topmost layer
-                        if (cellHover.Content != "") {
+                        if (cellHover.Content != "")
+                        {
                             // set new hover cell
                             _currentCellHover = cellHover;
 
                             // new hover cell has a hover action
-                            if (_currentCellHover.HoverAction != null) {
+                            if (_currentCellHover.HoverAction != null)
+                            {
 
                                 // current hover action is different to new hover action
-                                if (_hoverAction != _currentCellHover.HoverAction) {
+                                if (_hoverAction != _currentCellHover.HoverAction)
+                                {
 
                                     // current hover exit
-                                    if (_hoverAction != null) {
+                                    if (_hoverAction != null)
+                                    {
                                         _hoverAction.OnHoverExit();
                                     }
 
@@ -161,7 +173,8 @@ namespace phios {
                             }
 
                             // new hover cell has no hover action, just exit current hover action
-                            else if (_hoverAction != null) {
+                            else if (_hoverAction != null)
+                            {
                                 _hoverAction.OnHoverExit();
                                 _hoverAction = null;
                             }
@@ -172,10 +185,12 @@ namespace phios {
                 } // end !_dragging
 
                 // click
-                if (!_dragging) {
+                if (!_dragging)
+                {
                     if (Input.IsActionJustPressed("phios_click") &&
                         _currentCellHover != null &&
-                        _currentCellHover.ClickAction != null) {
+                        _currentCellHover.ClickAction != null)
+                    {
                         _currentCellHover.ClickAction.OnMouseDown();
                     }
                 }
@@ -184,7 +199,8 @@ namespace phios {
                 if (!_dragging &&
                     Input.IsActionJustPressed("phios_drag") &&
                     _currentCellHover != null &&
-                    _currentCellHover.DragAction != null) {
+                    _currentCellHover.DragAction != null)
+                {
                     _dragging = true;
                     _dragStart = _currentCell.Position;
                     _dragAction = _currentCellHover.DragAction;
@@ -194,7 +210,8 @@ namespace phios {
                 // drag end
                 else if (_dragging &&
                     Input.IsActionJustReleased("phios_drag") &&
-                    _dragAction != null) {
+                    _dragAction != null)
+                {
                     _dragging = false;
                     Vector2 dragDelta = _currentCell.Position - _dragStart;
                     _dragAction.OnDragDelta(dragDelta);
@@ -203,17 +220,20 @@ namespace phios {
                 }
 
                 // drag delta
-                else if (_dragging && _dragAction != null) {
+                else if (_dragging && _dragAction != null)
+                {
                     Vector2 dragDelta = _currentCell.Position - _dragStart;
                     _dragAction.OnDragDelta(dragDelta);
                 }
 
                 // scroll
-                if (!_dragging) {
+                if (!_dragging)
+                {
                     int scrollDelta = (Input.IsActionPressed("phios_scroll_up") ? -1 : 0) + (Input.IsActionPressed("phios_scroll_down") ? 1 : 0);
                     if (scrollDelta != 0 &&
                         _currentCellHover != null &&
-                        _currentCellHover.ScrollAction != null) {
+                        _currentCellHover.ScrollAction != null)
+                    {
                         _currentCellHover.ScrollAction.OnScrollDelta(scrollDelta);
                     }
                 }

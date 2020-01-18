@@ -1,8 +1,10 @@
 using System;
 using Godot;
 
-public static class MenuFactory {
-    public enum Menus {
+public static class MenuFactory
+{
+    public enum Menus
+    {
         None,
         Main,
         Settings,
@@ -10,10 +12,12 @@ public static class MenuFactory {
         LoadAdventure
     }
 
-    public static Control Create(MenuFactory.Menus menu, Node node) {
+    public static Control Create(MenuFactory.Menus menu, Node node)
+    {
         Node result = null;
 
-        switch (menu) {
+        switch (menu)
+        {
             case Menus.None:
                 // Sound.PauseSong();
                 return null;

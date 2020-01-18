@@ -3,10 +3,12 @@ using Godot;
 using GC = Godot.Collections;
 using SC = System.Collections.Generic;
 
-namespace phios {
+namespace Phios
+{
 
     [Tool]
-    public class DisplayMesh : MeshInstance {
+    public class DisplayMesh : MeshInstance
+    {
         public Display Display { get; private set; }
 
         public Vector3[] MeshVertices { get; private set; }
@@ -21,7 +23,8 @@ namespace phios {
         private GC.Array _arrays;
 
         // Called when the node enters the scene tree for the first time.
-        public override void _Ready() {
+        public override void _Ready()
+        {
             if (Engine.EditorHint)
                 return;
 
@@ -31,7 +34,8 @@ namespace phios {
             this._mesh = this.Mesh as ArrayMesh;
         }
 
-        public void Initialize(int width, int height, float quadWidth, float quadHeight, float z) {
+        public void Initialize(int width, int height, float quadWidth, float quadHeight, float z)
+        {
             if (Engine.EditorHint)
                 return;
 
@@ -45,7 +49,8 @@ namespace phios {
 
             // setup each quad
             var len = width * height;
-            for (int quad = 0; quad < len; quad++) {
+            for (int quad = 0; quad < len; quad++)
+            {
                 float x1 = (quad % width) * quadWidth;
                 float y1 = (quad / width) * -quadHeight;
                 float x2 = x1 + quadWidth;
@@ -84,7 +89,8 @@ namespace phios {
             _arrays.Resize((int) Mesh.ArrayType.Max);
         }
 
-        public void UpdateMesh() {
+        public void UpdateMesh()
+        {
             if (Engine.EditorHint)
                 return;
 
@@ -100,19 +106,23 @@ namespace phios {
             _mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, _arrays);
         }
 
-        public override string _GetConfigurationWarning() {
-            if (Mesh == null || !(Mesh is ArrayMesh)) {
+        public override string _GetConfigurationWarning()
+        {
+            if (Mesh == null || !(Mesh is ArrayMesh))
+            {
                 return "DisplayMesh.Mesh is not an array mesh!";
             }
 
             return "";
         }
 
-        public void UpdateEditor(int width, int height, float quadWidth, float quadHeight, float z) {
+        public void UpdateEditor(int width, int height, float quadWidth, float quadHeight, float z)
+        {
             if (!Engine.EditorHint)
                 return;
 
-            if (!(Mesh is ArrayMesh)) {
+            if (!(Mesh is ArrayMesh))
+            {
                 GD.PrintErr("DisplayMesh.Mesh is not an array mesh!");
                 return;
             }
@@ -124,13 +134,15 @@ namespace phios {
 
             var a = new GC.Array();
             a.Resize((int) Mesh.ArrayType.Max);
-            a[(int) Mesh.ArrayType.Vertex] = new Vector3[] {
+            a[(int) Mesh.ArrayType.Vertex] = new Vector3[]
+            {
                 new Vector3(0, 0, z),
                 new Vector3(width * quadWidth, 0, z),
                 new Vector3(width * quadWidth, height * -quadHeight, z),
                 new Vector3(0, height * -quadHeight, z)
             };
-            a[(int) Mesh.ArrayType.Index] = new int[] {
+            a[(int) Mesh.ArrayType.Index] = new int[]
+            {
                 0,
                 1,
                 2,

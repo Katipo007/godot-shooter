@@ -3,9 +3,11 @@ using Godot;
 using GC = Godot.Collections;
 using SC = System.Collections.Generic;
 
-namespace phios {
+namespace Phios
+{
     [Tool]
-    public class Display : Spatial {
+    public class Display : Spatial
+    {
         [Export(PropertyHint.ResourceType, "BitmapFont")]
         public BitmapFont Font { get; private set; }
 
@@ -48,21 +50,23 @@ namespace phios {
         private Vector3 zero3 = Vector3.Zero;
         private Vector2 zero2 = Vector2.Zero;
 
-        public Display() {
+        public Display()
+        {
 
         }
 
         [Export]
-        private bool _EditorUpdate {
-            get {
-                return false;
-            }
-            set {
+        private bool _EditorUpdate
+        {
+            get { return false; }
+            set
+            {
                 if (!Engine.EditorHint)
                     return;
 
                 var warning = _GetConfigurationWarning();
-                if (warning != "") {
+                if (warning != "")
+                {
                     GD.PrintErr(warning);
                     return;
                 }
@@ -76,14 +80,18 @@ namespace phios {
                 _quadWidth = 1f;
                 _quadHeight = Mathf.Clamp(((float) Font.Get("GlyphHeight") / (float) Font.Get("GlyphWidth")) * ((float) Font.Get("QuadHeightScale")), 0f, 100000f);
 
-                if (Background != null) {
+                if (Background != null)
+                {
                     Background.UpdateEditor(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
-                } else
+                }
+                else
                     GD.PrintErr("Failed to get Background DisplayMesh");
 
-                if (Foreground != null) {
+                if (Foreground != null)
+                {
                     Foreground.UpdateEditor(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
-                } else
+                }
+                else
                     GD.PrintErr("Failed to get Foreground DisplayMesh");
 
                 // initialize collision shape
@@ -95,10 +103,10 @@ namespace phios {
             }
         }
 
-        public override string _GetConfigurationWarning() {
-            if (Font == null || !(Font is BitmapFont)) {
+        public override string _GetConfigurationWarning()
+        {
+            if (Font == null || !(Font is BitmapFont))
                 return "No font is set!";
-            }
 
             if (!HasNode("Background") || !(GetNode("Background") is MeshInstance))
                 return "Missing a 'MeshInstance' with name 'Background'";
@@ -111,13 +119,15 @@ namespace phios {
 
             if (!HasNode("StaticBody") || !(GetNode("StaticBody") is StaticBody))
                 return "Missing 'StaticBody' with name 'StaticBody'";
-            else {
+            else
+            {
                 var staticBody = GetNode<StaticBody>("StaticBody");
 
                 var collisionShape = staticBody.GetNode("CollisionShape") as CollisionShape;
                 if (collisionShape == null)
                     return "No collision shape";
-                if (collisionShape.Shape == null || !(collisionShape.Shape is BoxShape)) {
+                if (collisionShape.Shape == null || !(collisionShape.Shape is BoxShape))
+                {
                     return "Invalid collision shape, requires a box shape.";
                 }
             }
@@ -126,7 +136,8 @@ namespace phios {
         }
 
         // Called when the node enters the scene tree for the first time.
-        public override void _Ready() {
+        public override void _Ready()
+        {
             if (Engine.EditorHint)
                 return;
 
@@ -144,7 +155,8 @@ namespace phios {
             _quadHeight = (Font.GlyphHeight / Font.GlyphWidth) * (Font.QuadHeightScale);
 
             // derive display height from width
-            if (AutoSize) {
+            if (AutoSize)
+            {
                 var screen = GetViewport();
                 int maxDisplayHeight = Mathf.RoundToInt((screen.Size.y / screen.Size.x) * DisplayWidth / _quadHeight);
                 DisplayHeight = maxDisplayHeight;
@@ -169,17 +181,22 @@ namespace phios {
 
             // pre-populate top layers
             _topLayers = new SC.LinkedList<int>[DisplayWidth, DisplayHeight];
-            for (int y = 0; y < DisplayHeight; y++) {
-                for (int x = 0; x < DisplayWidth; x++) {
+            for (int y = 0; y < DisplayHeight; y++)
+            {
+                for (int x = 0; x < DisplayWidth; x++)
+                {
                     _topLayers[x, y] = new SC.LinkedList<int>();
                 }
             }
 
             // pre-populate layers
-            for (int layerIndex = -(int) _nReservedLayers; layerIndex < _nInitialLayers; layerIndex++) {
+            for (int layerIndex = -(int) _nReservedLayers; layerIndex < _nInitialLayers; layerIndex++)
+            {
                 Cell[, ] layer = new Cell[DisplayWidth, DisplayHeight];
-                for (int y = 0; y < DisplayHeight; y++) {
-                    for (int x = 0; x < DisplayWidth; x++) {
+                for (int y = 0; y < DisplayHeight; y++)
+                {
+                    for (int x = 0; x < DisplayWidth; x++)
+                    {
                         layer[x, y] = CreateCell(layerIndex, x, y);
                     }
                 }
@@ -203,7 +220,8 @@ namespace phios {
             GetCell(0, DisplayWidth - 1, DisplayHeight - 1).SetContent("X", Colors.Red, Colors.Black);
         }
 
-        private Cell CreateCell(int layerIndex, int x, int y) {
+        private Cell CreateCell(int layerIndex, int x, int y)
+        {
             // create a new cell at layer and position
             Cell cell = new Cell();
             cell.Layer = layerIndex;
@@ -213,43 +231,54 @@ namespace phios {
             return cell;
         }
 
-        public int GetNumLayers() {
+        public int GetNumLayers()
+        {
             if (Initialized)
                 return _nLayers;
             else
                 throw new Exception("Display is not yet initialized!");
         }
 
-        public Cell GetCell(int layer, int x, int y) {
-            if (Initialized) {
+        public Cell GetCell(int layer, int x, int y)
+        {
+            if (Initialized)
+            {
                 // get layer cells, add if not already exists
                 Cell[, ] layerCells = null;
-                if (!_cells.TryGetValue(layer, out layerCells)) {
+                if (!_cells.TryGetValue(layer, out layerCells))
+                {
                     layerCells = new Cell[DisplayWidth, DisplayHeight];
                     _cells.Add(layer, layerCells);
                     _nLayers = Mathf.Max(layer + 1, _nLayers);
                 }
 
                 // get cell, add if not already exists
-                if (x >= 0 && y >= 0 && x < DisplayWidth && y < DisplayHeight) {
+                if (x >= 0 && y >= 0 && x < DisplayWidth && y < DisplayHeight)
+                {
                     Cell cell = layerCells[x, y];
-                    if (cell == null) {
+                    if (cell == null)
+                    {
                         cell = layerCells[x, y] = CreateCell(layer, x, y);
                     }
 
                     return cell;
                 }
                 // position out of bounds
-                else {
+                else
+                {
                     return null;
                 }
-            } else {
+            }
+            else
+            {
                 throw new Exception("Display is not yet initialized!");
             }
         }
 
-        public void AddCellAsTopLayer(Cell c) {
-            if (Initialized) {
+        public void AddCellAsTopLayer(Cell c)
+        {
+            if (Initialized)
+            {
                 // get top layers for cell
                 SC.LinkedList<int> topLayersForCell = _topLayers[(int) c.Position.x, (int) c.Position.y];
 
@@ -257,7 +286,8 @@ namespace phios {
                 if (topLayersForCell.Count == 0 ||
                     (topLayersForCell.Last.Value >= 0 && topLayersForCell.Last.Value < c.Layer) ||
                     (topLayersForCell.Last.Value >= 0 && c.Layer < 0) ||
-                    (topLayersForCell.Last.Value < 0 && c.Layer < 0 && c.Layer < topLayersForCell.Last.Value)) {
+                    (topLayersForCell.Last.Value < 0 && c.Layer < 0 && c.Layer < topLayersForCell.Last.Value))
+                {
                     topLayersForCell.AddLast(c.Layer);
                     return;
                 }
@@ -265,17 +295,20 @@ namespace phios {
                 else if (
                     (topLayersForCell.First.Value >= 0 && c.Layer >= 0 && topLayersForCell.First.Value > c.Layer) ||
                     (topLayersForCell.First.Value < 0 && c.Layer >= 0) ||
-                    (topLayersForCell.First.Value < 0 && c.Layer < 0 && topLayersForCell.First.Value < c.Layer)) {
+                    (topLayersForCell.First.Value < 0 && c.Layer < 0 && topLayersForCell.First.Value < c.Layer))
+                {
                     topLayersForCell.AddFirst(c.Layer);
                     return;
                 }
 
                 // insert layer
                 SC.LinkedListNode<int> current = topLayersForCell.First;
-                while (current.Next != null) {
+                while (current.Next != null)
+                {
 
                     // layer already exists
-                    if (current.Value == c.Layer || current.Next.Value == c.Layer) {
+                    if (current.Value == c.Layer || current.Next.Value == c.Layer)
+                    {
                         return;
                     }
 
@@ -283,7 +316,8 @@ namespace phios {
                     if ((current.Value >= 0 && c.Layer >= 0 && current.Next.Value >= 0 && current.Value < c.Layer && current.Next.Value > c.Layer) ||
                         (current.Value >= 0 && c.Layer >= 0 && current.Next.Value < 0 && current.Value < c.Layer) ||
                         (current.Value >= 0 && c.Layer < 0 && current.Next.Value < 0 && current.Next.Value < c.Layer) ||
-                        (current.Value < 0 && c.Layer < 0 && current.Value > c.Layer && current.Next.Value < c.Layer)) {
+                        (current.Value < 0 && c.Layer < 0 && current.Value > c.Layer && current.Next.Value < c.Layer))
+                    {
                         topLayersForCell.AddAfter(current, c.Layer);
                         return;
                     }
@@ -291,46 +325,64 @@ namespace phios {
                     current = current.Next;
                 }
 
-            } else {
+            }
+            else
+            {
                 throw new Exception("Display is not yet initialized!");
             }
         }
 
-        public void RemoveCellAsTopLayer(Cell c) {
-            if (Initialized) {
+        public void RemoveCellAsTopLayer(Cell c)
+        {
+            if (Initialized)
+            {
                 // get top layers for cell
                 SC.LinkedList<int> topLayersForCell = _topLayers[(int) c.Position.x, (int) c.Position.y];
 
                 // remove layer
-                if (topLayersForCell.Contains(c.Layer)) {
+                if (topLayersForCell.Contains(c.Layer))
+                {
                     topLayersForCell.Remove(c.Layer);
                 }
-            } else {
+            }
+            else
+            {
                 throw new Exception("Display is not yet initialized!");
             }
         }
 
-        public SC.LinkedList<int> GetTopLayersForCell(int x, int y) {
-            if (Initialized) {
-                if (x >= 0 && y >= 0 && x < DisplayWidth && y < DisplayHeight) {
+        public SC.LinkedList<int> GetTopLayersForCell(int x, int y)
+        {
+            if (Initialized)
+            {
+                if (x >= 0 && y >= 0 && x < DisplayWidth && y < DisplayHeight)
+                {
                     return _topLayers[x, y];
-                } else {
+                }
+                else
+                {
                     return new SC.LinkedList<int>();
                 }
-            } else {
+            }
+            else
+            {
                 throw new Exception("Display is not yet initialized!");
             }
         }
 
-        public Color GetBackgroundColorForCell(int x, int y, params int[] excludedLayers) {
-            if (Initialized) {
+        public Color GetBackgroundColorForCell(int x, int y, params int[] excludedLayers)
+        {
+            if (Initialized)
+            {
                 SC.List<int> excludedLayersList = new SC.List<int>(excludedLayers);
 
                 // get background color of cell previous to excluded layers
                 SC.LinkedList<int> topLayer = GetTopLayersForCell(x, y);
-                if (topLayer.First != null && !excludedLayersList.Contains(topLayer.First.Value)) {
+                if (topLayer.First != null && !excludedLayersList.Contains(topLayer.First.Value))
+                {
                     SC.LinkedListNode<int> topLayerNode = topLayer.Last;
-                    while (excludedLayersList.Contains(topLayerNode.Value)) {
+                    while (excludedLayersList.Contains(topLayerNode.Value))
+                    {
                         topLayerNode = topLayerNode.Previous;
                     }
                     Cell cell = GetCell(topLayerNode.Value, x, y);
@@ -338,36 +390,46 @@ namespace phios {
                 }
 
                 return ClearColor;
-            } else {
+            }
+            else
+            {
                 throw new Exception("Display is not yet initialized!");
             }
         }
 
         // Called every frame. 'delta' is the elapsed time since the previous frame.
-        public override void _Process(float delta) {
-            if (!Engine.EditorHint && Initialized) {
+        public override void _Process(float delta)
+        {
+            if (!Engine.EditorHint && Initialized)
+            {
                 // update cells
                 SC.LinkedListNode<Cell> cellNode = _cellList.First;
-                while (cellNode != null) {
+                while (cellNode != null)
+                {
                     cellNode.Value.Update(delta);
                     cellNode = cellNode.Next;
                 }
 
                 // update display meshes
-                for (int y = 0; y < DisplayHeight; y++) {
-                    for (int x = 0; x < DisplayWidth; x++) {
+                for (int y = 0; y < DisplayHeight; y++)
+                {
+                    for (int x = 0; x < DisplayWidth; x++)
+                    {
                         // get top layer for cell
                         var topLayersForCell = _topLayers[x, y];
 
                         // get cell at top layer
                         Cell cell = null;
-                        if (topLayersForCell.First != null) {
+                        if (topLayersForCell.First != null)
+                        {
                             cell = _cells[topLayersForCell.Last.Value][x, y];
                         }
 
                         // empty cell
-                        if (cell == null || cell.Content == "") {
-                            for (int i = 0; i < 4; i++) {
+                        if (cell == null || cell.Content == "")
+                        {
+                            for (int i = 0; i < 4; i++)
+                            {
                                 int vert = (y * DisplayWidth + x) * 4 + i;
                                 // update display mesh vertices, uvs and colours
                                 Foreground.MeshVertices[vert].x = 0;
@@ -378,9 +440,11 @@ namespace phios {
                             }
                         }
                         // filled cell
-                        else {
+                        else
+                        {
                             var glyph = Font.GetGlyph(cell.Content);
-                            for (int i = 0; i < 4; i++) {
+                            for (int i = 0; i < 4; i++)
+                            {
                                 int vert = (y * DisplayWidth + x) * 4 + i;
 
                                 // update display mesh vertices, uvs and colours
@@ -399,7 +463,8 @@ namespace phios {
                 Foreground.UpdateMesh();
 
                 // take screenshots
-                if (Input.IsActionJustPressed("screenshot")) {
+                if (Input.IsActionJustPressed("screenshot"))
+                {
                     var image = GetViewport().GetTexture().GetData();
                     image.FlipY();
                     image.SavePng("user://screenshots/phiosScreenshot.png");
@@ -408,7 +473,8 @@ namespace phios {
             }
         }
 
-        public bool IsInitialized() {
+        public bool IsInitialized()
+        {
             return Initialized;
         }
     } // end class

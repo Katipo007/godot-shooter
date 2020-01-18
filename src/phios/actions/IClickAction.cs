@@ -1,8 +1,10 @@
 using System;
 using Godot;
 
-namespace phios {
-    public interface IClickAction {
+namespace Phios
+{
+    public interface IClickAction
+    {
         void OnMouseDown();
     }
 }

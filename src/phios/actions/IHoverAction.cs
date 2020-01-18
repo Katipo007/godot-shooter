@@ -1,8 +1,10 @@
 using System;
 using Godot;
 
-namespace phios {
-    public interface IHoverAction {
+namespace Phios
+{
+    public interface IHoverAction
+    {
         void OnHoverEnter();
         void OnHoverExit();
     }

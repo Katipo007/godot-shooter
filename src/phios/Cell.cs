@@ -1,13 +1,16 @@
 using System;
 using Godot;
 
-namespace phios {
-    public class CellFades {
+namespace Phios
+{
+    public class CellFades
+    {
         public static string DEFAULT_REVERSE = "░▒▓█";
         public static string DEFAULT = "█▓▒░";
     }
 
-    public class Cell {
+    public class Cell
+    {
         public int Layer { get; set; }
         public Vector2 Position { get; set; }
         public Display Owner { get; set; }
@@ -32,30 +35,36 @@ namespace phios {
 
         public static readonly Color ClearColour = Color.Color8(0, 0, 0, 0);
 
-        public void Clear() {
+        public void Clear()
+        {
             SetContent("", ClearColour, ClearColour);
         }
 
-        public void Clear(float fadeTime, Color fadeColor) {
+        public void Clear(float fadeTime, Color fadeColor)
+        {
             SetContent("", ClearColour, ClearColour, fadeTime, fadeColor, CellFades.DEFAULT_REVERSE);
         }
 
-        public void SetContent(string content, Color backgroundColor, Color foregroundColor) {
+        public void SetContent(string content, Color backgroundColor, Color foregroundColor)
+        {
             SetContent(content, backgroundColor, foregroundColor, 0f, foregroundColor, "");
         }
 
-        public void SetContent(string content, Color backgroundColor, Color foregroundColor, float fadeTime, Color fadeColor) {
+        public void SetContent(string content, Color backgroundColor, Color foregroundColor, float fadeTime, Color fadeColor)
+        {
             SetContent(content, backgroundColor, foregroundColor, fadeTime, fadeColor, CellFades.DEFAULT);
         }
 
-        public void SetContent(string content, Color backgroundColor, Color foregroundColor, float fadeMax, Color fadeColor, string fades) {
+        public void SetContent(string content, Color backgroundColor, Color foregroundColor, float fadeMax, Color fadeColor, string fades)
+        {
             // set targets
             _targetContent = content;
             this.BackgroundColor = backgroundColor;
             _targetColor = foregroundColor;
 
             // fade
-            if (fadeMax > 0f) {
+            if (fadeMax > 0f)
+            {
                 _fadeMax = (float) GD.RandRange(0f, fadeMax);
                 _fadeLeft = _fadeMax;
 
@@ -65,31 +74,38 @@ namespace phios {
                 _fadeFinished = false;
             }
             // instant
-            else {
+            else
+            {
                 _fadeLeft = 0f;
                 _fadeMax = 0f;
                 _fadeFinished = true;
             }
 
             // add cell to top layer
-            if (_targetContent != "") {
+            if (_targetContent != "")
+            {
                 Owner.AddCellAsTopLayer(this);
             }
         }
 
-        public void Update(float deltaTime) {
+        public void Update(float deltaTime)
+        {
             // display initialized
-            if (Owner != null && Owner.Initialized) {
+            if (Owner != null && Owner.Initialized)
+            {
                 // fade
-                if (_fadeLeft > 0f) {
+                if (_fadeLeft > 0f)
+                {
                     Content = (_targetContent.Trim().Length > 0 || Content.Trim().Length > 0) ? _fades.Substring(Mathf.RoundToInt((_fadeLeft / _fadeMax) * (_fades.Length - 1)), 1) : _targetContent;
                     ForegroundColor = _targetColor.LinearInterpolate(_fadeColor, Owner.ColorLerpCurve.Interpolate(_fadeLeft / _fadeMax));
                     _fadeLeft -= deltaTime;
                 }
                 // fade finished
-                else {
+                else
+                {
                     // remove cell from top layer
-                    if (!_fadeFinished && _targetContent == "") {
+                    if (!_fadeFinished && _targetContent == "")
+                    {
                         Owner.RemoveCellAsTopLayer(this);
                     }
 

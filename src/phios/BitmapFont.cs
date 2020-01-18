@@ -3,9 +3,11 @@ using Godot;
 using GC = Godot.Collections;
 using SC = System.Collections.Generic;
 
-namespace phios {
+namespace Phios
+{
 
-    public class BitmapFont : Godot.Resource {
+    public class BitmapFont : Godot.Resource
+    {
         [Export(PropertyHint.File, "*.xml,*.fnt")]
         public readonly string BitmapFontXml;
 
@@ -24,7 +26,8 @@ namespace phios {
 
         private SC.Dictionary<string, BitmapFontGlyph> _glyphs = new SC.Dictionary<string, BitmapFontGlyph>();
 
-        public void Init() {
+        public void Init()
+        {
             // exit early if already loaded
             if (Loaded)
                 return;
@@ -33,11 +36,13 @@ namespace phios {
             XMLParser xml = new XMLParser();
             Error e = xml.Open(BitmapFontXml);
 
-            if (e != Error.Ok) {
+            if (e != Error.Ok)
+            {
                 throw new FieldAccessException($"Failed to open font xml {BitmapFontXml}: {e}");
             }
 
-            while (xml.Read() == Error.Ok) {
+            while (xml.Read() == Error.Ok)
+            {
                 if (xml.GetNodeType() != XMLParser.NodeType.Element)
                     continue;
 
@@ -46,15 +51,18 @@ namespace phios {
                     continue;
 
                 // parse texture size
-                if (nodeName == "common") {
+                if (nodeName == "common")
+                {
                     TextureSize = float.Parse(xml.GetNamedAttributeValue("scaleW"));
                 }
 
                 // parse glyph
-                else if (nodeName == "char") {
+                else if (nodeName == "char")
+                {
                     string glyphString = char.ConvertFromUtf32(int.Parse(xml.GetNamedAttributeValue("id")));
                     // new glyph
-                    if (!_glyphs.ContainsKey(glyphString)) {
+                    if (!_glyphs.ContainsKey(glyphString))
+                    {
                         var glyph = new BitmapFontGlyph();
                         glyph.GlyphString = glyphString;
                         glyph.x = float.Parse(xml.GetNamedAttributeValue("x"));
@@ -75,16 +83,19 @@ namespace phios {
             GD.Print($"{_glyphs.Count} GLYPHS LOADED!");
         }
 
-        public BitmapFontGlyph GetGlyph(string glyphString) {
+        public BitmapFontGlyph GetGlyph(string glyphString)
+        {
             BitmapFontGlyph glyph;
 
             // return specified glyph
-            if (_glyphs.TryGetValue(glyphString, out glyph)) {
+            if (_glyphs.TryGetValue(glyphString, out glyph))
+            {
                 return glyph;
             }
 
             // not found
-            else {
+            else
+            {
                 return _glyphs["?"];
             }
         }
