@@ -66,6 +66,9 @@ namespace Phios
                 if (!Engine.EditorHint)
                     return;
 
+                if (value != true)
+                    return;
+
                 var warning = _GetConfigurationWarning();
                 if (warning != "")
                 {

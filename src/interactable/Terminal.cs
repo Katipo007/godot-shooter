@@ -32,6 +32,7 @@ public class Terminal : Interactable
 
         // set our shape to match the display
         _collisionShape.Shape = (Display.GetNode("StaticBody/CollisionShape") as CollisionShape).Shape;
+        _collisionShape.Translation = (Display.GetNode("StaticBody/CollisionShape") as CollisionShape).Translation;
     }
 
     public override string _GetConfigurationWarning()
