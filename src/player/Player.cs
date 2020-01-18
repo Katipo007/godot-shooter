@@ -28,6 +28,11 @@ public class Player : KinematicBody
     private RayCast _weapon_raycast;
     private RayCast _interaction_raycast;
 
+    /// <summary>
+    /// Active phios display cursor
+    /// </summary>
+    private Phios.Mouse _activeMouse = null;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -46,7 +51,15 @@ public class Player : KinematicBody
     public override void _Process(float delta)
     {
         if (Input.IsActionJustPressed("ui_cancel"))
-            Input.SetMouseMode(Input.MouseMode.Visible);
+        {
+            // Input.SetMouseMode(Input.MouseMode.Visible);
+            if (_activeMouse != null)
+            {
+                _activeMouse = null;
+            }
+        }
+
+        // TODO: Disengage Phios mouse if we move too far away
     }
 
     public override void _Input(InputEvent input)
@@ -56,12 +69,23 @@ public class Player : KinematicBody
         // handle mouse look
         if (motion != null)
         {
-            _head.RotateY(Mathf.Deg2Rad(-motion.Relative.x * mouse_sensitivity * (mouse_invert_x ? -1 : 1)));
+            var mouseDeltaX = motion.Relative.x * mouse_sensitivity * (mouse_invert_x ? -1 : 1);
+            var mouseDeltaY = motion.Relative.y * mouse_sensitivity * (mouse_invert_y ? -1 : 1);
 
-            var x_delta = -motion.Relative.y * mouse_sensitivity * (mouse_invert_y ? -1 : 1);
-            if (((_camera.RotationDegrees.x + x_delta) > -90.0f) && ((_camera.RotationDegrees.x + x_delta) < 90.0f))
+            // we are using a Phios display mouse, so move it
+            if (_activeMouse != null)
             {
-                _camera.RotateX(Mathf.Deg2Rad(x_delta));
+                _activeMouse.Position += new Vector2(mouseDeltaX, mouseDeltaY);
+            }
+
+            // move the camera
+            else
+            {
+                _head.RotateY(Mathf.Deg2Rad(-mouseDeltaX));
+                if (((_camera.RotationDegrees.x - mouseDeltaY) > -90.0f) && ((_camera.RotationDegrees.x - mouseDeltaY) < 90.0f))
+                {
+                    _camera.RotateX(Mathf.Deg2Rad(-mouseDeltaY));
+                }
             }
         }
     }
@@ -69,28 +93,31 @@ public class Player : KinematicBody
     public override void _PhysicsProcess(float delta)
     {
         var head_basis = _head.GetGlobalTransform().basis;
-
         var direction = new Vector3();
 
-        // forward-back movement
-        if (Input.IsActionPressed("move_forward"))
+        // if we aren't trying to use a Phios mouse allow movement
+        if (_activeMouse == null)
         {
-            // -Z is forward in Godot
-            direction -= head_basis.z;
-        }
-        else if (Input.IsActionPressed("move_backward"))
-        {
-            direction += head_basis.z;
-        }
+            // forward-back movement
+            if (Input.IsActionPressed("move_forward"))
+            {
+                // -Z is forward in Godot
+                direction -= head_basis.z;
+            }
+            else if (Input.IsActionPressed("move_backward"))
+            {
+                direction += head_basis.z;
+            }
 
-        // left-right movement
-        if (Input.IsActionPressed("move_left"))
-        {
-            direction -= head_basis.x;
-        }
-        else if (Input.IsActionPressed("move_right"))
-        {
-            direction += head_basis.x;
+            // left-right movement
+            if (Input.IsActionPressed("move_left"))
+            {
+                direction -= head_basis.x;
+            }
+            else if (Input.IsActionPressed("move_right"))
+            {
+                direction += head_basis.x;
+            }
         }
 
         // normalize direction
@@ -102,11 +129,16 @@ public class Player : KinematicBody
         _velocity.y = old_y_velocity - _gravity;
 
         // jumping
-        if (Input.IsActionJustPressed("jump") && this.IsOnFloor())
+        if ((_activeMouse == null) && Input.IsActionJustPressed("jump") && this.IsOnFloor())
         {
             _velocity.y += _jump_power;
         }
 
         _velocity = MoveAndSlide(_velocity, Vector3.Up);
+    }
+
+    public void SetActiveMouse(Phios.Mouse mouse)
+    {
+        this._activeMouse = mouse;
     }
 }

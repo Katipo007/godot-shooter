@@ -55,6 +55,7 @@
     <Compile Include="src\core\Settings.cs" />
     <Compile Include="src\interactable\Interactable.cs" />
     <Compile Include="src\interactable\InteractableLightswitch.cs" />
+    <Compile Include="src\interactable\Terminal.cs" />
     <Compile Include="src\menus\IMenu.cs" />
     <Compile Include="src\menus\MenuFactory.cs" />
     <Compile Include="src\phios\actions\IClickAction.cs" />

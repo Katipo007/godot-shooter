@@ -4,6 +4,7 @@ using GC = Godot.Collections;
 
 namespace Phios
 {
+    [Tool]
     public class Mouse : Node
     {
         [Export]
@@ -66,6 +67,9 @@ namespace Phios
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
+            if (Engine.EditorHint)
+                return;
+
             this.Display = GetParent<Display>();
         }
 
@@ -80,10 +84,13 @@ namespace Phios
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(float delta)
         {
+            if (Engine.EditorHint)
+                return;
+
             // clamp mouse position to bounds
             _position.Set(
-                Utils.Clamp(_position.x, Display.DisplayWidth * ScreenMin.x, Display.DisplayWidth * ScreenMax.x),
-                Utils.Clamp(_position.y, Display.DisplayHeight * ScreenMin.y, Display.DisplayHeight * ScreenMax.y));
+                Utils.Clamp(_position.x, Display.DisplayWidth * ScreenMin.x, Display.DisplayWidth * ScreenMax.x - 1),
+                Utils.Clamp(_position.y, Display.DisplayHeight * ScreenMin.y, Display.DisplayHeight * ScreenMax.y - 1));
 
             // clear current cell
             if (_currentCell != null)

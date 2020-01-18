@@ -34,6 +34,8 @@ namespace Phios
         [Export]
         public Color ClearColor { get; private set; } = Color.Color8(0, 0, 0, 255);
 
+        [Export]
+        private float _quadScale = 0.5f;
         private float _quadWidth;
         private float _quadHeight;
 
@@ -77,8 +79,8 @@ namespace Phios
                 Background = GetNode("Background") as DisplayMesh;
                 Foreground = GetNode("Foreground") as DisplayMesh;
 
-                _quadWidth = 1f;
-                _quadHeight = Mathf.Clamp(((float) Font.Get("GlyphHeight") / (float) Font.Get("GlyphWidth")) * ((float) Font.Get("QuadHeightScale")), 0f, 100000f);
+                _quadWidth = _quadScale;
+                _quadHeight = Mathf.Clamp(((float) Font.Get("GlyphHeight") / (float) Font.Get("GlyphWidth")) * ((float) Font.Get("QuadHeightScale")), 0f, 100000f) * _quadScale;
 
                 if (Background != null)
                 {
@@ -151,8 +153,8 @@ namespace Phios
             Foreground = GetNode<DisplayMesh>("Foreground");
 
             // calculate quad size
-            _quadWidth = 1f;
-            _quadHeight = (Font.GlyphHeight / Font.GlyphWidth) * (Font.QuadHeightScale);
+            _quadWidth = _quadScale;
+            _quadHeight = (Font.GlyphHeight / Font.GlyphWidth) * (Font.QuadHeightScale) * _quadScale;
 
             // derive display height from width
             if (AutoSize)
