@@ -5,7 +5,7 @@
 [ext_resource path="res://src/enemies/target/Target.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/ui/HUD.tscn" type="PackedScene" id=4]
 [ext_resource path="res://default_env.tres" type="Environment" id=5]
-[ext_resource path="res://src/phios/Display.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/interactable/Terminal.tscn" type="PackedScene" id=6]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 20, 1, 20 )
@@ -87,9 +87,13 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.15094, 4.66985, -6.49958 )
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource( 5 )
 
-[node name="Display" parent="." instance=ExtResource( 6 )]
-transform = Transform( -0.00642594, 0, -0.998151, 0, 0.0920105, 0, 0.105517, 0, -0.0607868, 12.9941, 6.80315, -1.77503 )
-ClearColor = Color( 0, 0, 0, 0.509804 )
+[node name="Terminal" parent="." instance=ExtResource( 6 )]
+transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 9.06109, 3.50078, -4.63274 )
+
+[node name="Display" parent="Terminal" index="0"]
 BackgroundMaterial = SubResource( 5 )
-DisplayWidth = 60
+ClearColor = Color( 0.290196, 0.341176, 0.105882, 0.584314 )
 DisplayHeight = 20
+_quadScale = 1.0
+
+[editable path="Terminal"]
