@@ -48,13 +48,6 @@ public class Terminal : Interactable
         return "";
     }
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(float delta)
-    {
-        if (Engine.EditorHint)
-            return;
-    }
-
     public override string GetInteractionText()
     {
         return "Use Terminal";

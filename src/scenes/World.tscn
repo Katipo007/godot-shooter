@@ -91,9 +91,8 @@ environment = ExtResource( 5 )
 transform = Transform( -4.37114e-008, 0, -1, 0, 1, 0, 1, 0, -4.37114e-008, 9.06109, 3.50078, -4.63274 )
 
 [node name="Display" parent="Terminal" index="0"]
-BackgroundMaterial = SubResource( 5 )
 ClearColor = Color( 0.290196, 0.341176, 0.105882, 0.584314 )
 DisplayHeight = 20
-_quadScale = 1.0
+BackgroundMaterial = SubResource( 5 )
 
 [editable path="Terminal"]
