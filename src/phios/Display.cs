@@ -17,9 +17,9 @@ namespace phios {
         public DisplayMesh Background { get; private set; }
         public DisplayMesh Foreground { get; private set; }
 
-        [Export]
+        [Export(PropertyHint.Range, "4,1000,1,allow_greater")]
         public int DisplayWidth { get; private set; } = 80;
-        [Export]
+        [Export(PropertyHint.Range, "4,1000,1,allow_greater")]
         public int DisplayHeight { get; private set; } = 40;
         [Export]
         public readonly bool AutoSize = false;
@@ -35,10 +35,10 @@ namespace phios {
         private float _quadWidth;
         private float _quadHeight;
 
-        [Export(PropertyHint.Range, "0;10")]
-        private int _nReservedLayers = 1;
+        [Export(PropertyHint.Range, "0,10,1,allow_greater,allow_lesser")]
+        private uint _nReservedLayers = 1;
 
-        [Export(PropertyHint.Range, "0;10")]
+        [Export(PropertyHint.Range, "0,10,1,allow_greater,allow_lesser")]
         private int _nInitialLayers = 3;
         private int _nLayers = 0;
 
@@ -176,7 +176,7 @@ namespace phios {
             }
 
             // pre-populate layers
-            for (int layerIndex = -_nReservedLayers; layerIndex < _nInitialLayers; layerIndex++) {
+            for (int layerIndex = -(int) _nReservedLayers; layerIndex < _nInitialLayers; layerIndex++) {
                 Cell[, ] layer = new Cell[DisplayWidth, DisplayHeight];
                 for (int y = 0; y < DisplayHeight; y++) {
                     for (int x = 0; x < DisplayWidth; x++) {
