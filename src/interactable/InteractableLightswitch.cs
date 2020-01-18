@@ -21,7 +21,7 @@ public class InteractableLightswitch : Interactable
         SetLightEnergy();
     }
 
-    public override void Interact()
+    public override void Interact(Node user)
     {
         _on = !_on;
         SetLightEnergy();

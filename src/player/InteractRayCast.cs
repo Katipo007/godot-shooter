@@ -7,6 +7,9 @@ public class InteractRayCast : RayCast
 
     private Label _interactionLabel;
 
+    [Export(PropertyHint.ResourceType, "Node")]
+    public string User { get; set; } = null;
+
     public override void _Ready()
     {
         _interactionLabel = GetNode<Label>("/root/World/HUD/InteractionLabel");
@@ -28,7 +31,7 @@ public class InteractRayCast : RayCast
 
             if (Input.IsActionJustPressed("interact"))
             {
-                (collider as Interactable).Interact();
+                (collider as Interactable).Interact(GetNode(User));
                 // text could have changed
                 SetInteractionText((collider as Interactable).GetInteractionText());
             }

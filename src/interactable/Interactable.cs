@@ -1,16 +1,10 @@
 using System;
 using Godot;
 
-public class Interactable : Node
+public abstract class Interactable : Node
 {
 
-    public virtual string GetInteractionText()
-    {
-        return "interact";
-    }
+    public abstract string GetInteractionText();
 
-    public virtual void Interact()
-    {
-        GD.Print($"Interacted with {Name}");
-    }
+    public abstract void Interact(Node user);
 }
