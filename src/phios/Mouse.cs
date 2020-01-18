@@ -1,13 +1,11 @@
 using System;
 using Godot;
+using GC = Godot.Collections;
 
 namespace Phios
 {
     public class Mouse : Node
     {
-        [Export]
-        public bool HideNativeCursor { get; set; } = false;
-
         [Export]
         public int ReservedLayer { get; set; } = -1;
 
@@ -25,8 +23,6 @@ namespace Phios
 
         [Export]
         public bool FadeToClear { get; set; } = true;
-
-        public bool Initialized { get; private set; } = false;
 
         /// <summary>
         /// Cursor position on the screen
@@ -55,6 +51,7 @@ namespace Phios
         [Export]
         public Vector2 ScreenMax { get; set; } = new Vector2(1f, 1f);
 
+        private bool _active;
         private Vector2 _position;
         private Cell _currentCell;
         private Cell _currentCellHover;
@@ -69,12 +66,7 @@ namespace Phios
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
-            if (HideNativeCursor)
-                Utils.CaptureMouse();
-
             this.Display = GetParent<Display>();
-
-            Initialized = true;
         }
 
         public override string _GetConfigurationWarning()
@@ -88,154 +80,150 @@ namespace Phios
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(float delta)
         {
-            if (Initialized)
+            // clamp mouse position to bounds
+            _position.Set(
+                Utils.Clamp(_position.x, Display.DisplayWidth * ScreenMin.x, Display.DisplayWidth * ScreenMax.x),
+                Utils.Clamp(_position.y, Display.DisplayHeight * ScreenMin.y, Display.DisplayHeight * ScreenMax.y));
+
+            // clear current cell
+            if (_currentCell != null)
             {
-
-                // clamp mouse position to bounds
-                _position.Set(
-                    Utils.Clamp(_position.x, Display.DisplayWidth * ScreenMin.x, Display.DisplayWidth * ScreenMax.x),
-                    Utils.Clamp(_position.y, Display.DisplayHeight * ScreenMin.y, Display.DisplayHeight * ScreenMax.y));
-
-                // clear current cell
-                if (_currentCell != null)
-                {
-                    // get background color to clear to
-                    Color clearColor = Display.GetBackgroundColorForCell(
-                        (int) _position.x,
-                        (int) _position.y,
-                        ReservedLayer
-                    );
-
-                    // clear cell content
-                    _currentCell.SetContent(
-                        "",
-                        clearColor,
-                        FadeToClear ? Display.ClearColor : CursorColor,
-                        CursorFadeTime,
-                        CursorColor,
-                        CellFades.DEFAULT_REVERSE);
-
-                    _currentCell = null;
-                }
-
-                // reset current cell hover
-                _currentCellHover = null;
-
-                // new current cell
-                _currentCell = Display.GetCell(ReservedLayer, (int) _position.x, (int) _position.y);
-
-                // get background color for current cell
-                Color currentCellBackgroundColor = Display.GetBackgroundColorForCell(
+                // get background color to clear to
+                Color clearColor = Display.GetBackgroundColorForCell(
                     (int) _position.x,
                     (int) _position.y,
-                    ReservedLayer);
+                    ReservedLayer
+                );
 
-                // highlight cell
+                // clear cell content
                 _currentCell.SetContent(
-                    Input.IsActionPressed("phios_click") ? CursorDown : CursorUp,
-                    currentCellBackgroundColor,
+                    "",
+                    clearColor,
+                    FadeToClear ? Display.ClearColor : CursorColor,
+                    CursorFadeTime,
                     CursorColor,
-                    0f,
-                    CursorColor,
-                    "");
+                    CellFades.DEFAULT_REVERSE);
 
-                // hover
-                if (!_dragging)
+                _currentCell = null;
+            }
+
+            // reset current cell hover
+            _currentCellHover = null;
+
+            // new current cell
+            _currentCell = Display.GetCell(ReservedLayer, (int) _position.x, (int) _position.y);
+
+            // get background color for current cell
+            Color currentCellBackgroundColor = Display.GetBackgroundColorForCell(
+                (int) _position.x,
+                (int) _position.y,
+                ReservedLayer);
+
+            // highlight cell
+            _currentCell.SetContent(
+                Input.IsActionPressed("phios_click") ? CursorDown : CursorUp,
+                currentCellBackgroundColor,
+                CursorColor,
+                0f,
+                CursorColor,
+                "");
+
+            // hover
+            if (!_dragging)
+            {
+                for (int i = Display.GetNumLayers() - 1; i >= 0; i--)
                 {
-                    for (int i = Display.GetNumLayers() - 1; i >= 0; i--)
-                    {
-                        Cell cellHover = Display.GetCell(i, (int) _position.x, (int) _position.y);
+                    Cell cellHover = Display.GetCell(i, (int) _position.x, (int) _position.y);
 
-                        // hover on topmost layer
-                        if (cellHover.Content != "")
+                    // hover on topmost layer
+                    if (cellHover.Content != "")
+                    {
+                        // set new hover cell
+                        _currentCellHover = cellHover;
+
+                        // new hover cell has a hover action
+                        if (_currentCellHover.HoverAction != null)
                         {
-                            // set new hover cell
-                            _currentCellHover = cellHover;
 
-                            // new hover cell has a hover action
-                            if (_currentCellHover.HoverAction != null)
+                            // current hover action is different to new hover action
+                            if (_hoverAction != _currentCellHover.HoverAction)
                             {
 
-                                // current hover action is different to new hover action
-                                if (_hoverAction != _currentCellHover.HoverAction)
+                                // current hover exit
+                                if (_hoverAction != null)
                                 {
-
-                                    // current hover exit
-                                    if (_hoverAction != null)
-                                    {
-                                        _hoverAction.OnHoverExit();
-                                    }
-
-                                    // new hover enter
-                                    _hoverAction = _currentCellHover.HoverAction;
-                                    _hoverAction.OnHoverEnter();
+                                    _hoverAction.OnHoverExit();
                                 }
+
+                                // new hover enter
+                                _hoverAction = _currentCellHover.HoverAction;
+                                _hoverAction.OnHoverEnter();
                             }
+                        }
 
-                            // new hover cell has no hover action, just exit current hover action
-                            else if (_hoverAction != null)
-                            {
-                                _hoverAction.OnHoverExit();
-                                _hoverAction = null;
-                            }
+                        // new hover cell has no hover action, just exit current hover action
+                        else if (_hoverAction != null)
+                        {
+                            _hoverAction.OnHoverExit();
+                            _hoverAction = null;
+                        }
 
-                            break;
-                        } // end cellHover.Content != ""
-                    }
-                } // end !_dragging
-
-                // click
-                if (!_dragging)
-                {
-                    if (Input.IsActionJustPressed("phios_click") &&
-                        _currentCellHover != null &&
-                        _currentCellHover.ClickAction != null)
-                    {
-                        _currentCellHover.ClickAction.OnMouseDown();
-                    }
+                        break;
+                    } // end cellHover.Content != ""
                 }
+            } // end !_dragging
 
-                // drag start
-                if (!_dragging &&
-                    Input.IsActionJustPressed("phios_drag") &&
+            // click
+            if (!_dragging)
+            {
+                if (Input.IsActionJustPressed("phios_click") &&
                     _currentCellHover != null &&
-                    _currentCellHover.DragAction != null)
+                    _currentCellHover.ClickAction != null)
                 {
-                    _dragging = true;
-                    _dragStart = _currentCell.Position;
-                    _dragAction = _currentCellHover.DragAction;
-                    _dragAction.OnDragStart();
+                    _currentCellHover.ClickAction.OnMouseDown();
                 }
+            }
 
-                // drag end
-                else if (_dragging &&
-                    Input.IsActionJustReleased("phios_drag") &&
-                    _dragAction != null)
-                {
-                    _dragging = false;
-                    Vector2 dragDelta = _currentCell.Position - _dragStart;
-                    _dragAction.OnDragDelta(dragDelta);
-                    _dragAction.OnDragEnd();
-                    _dragAction = null;
-                }
+            // drag start
+            if (!_dragging &&
+                Input.IsActionJustPressed("phios_drag") &&
+                _currentCellHover != null &&
+                _currentCellHover.DragAction != null)
+            {
+                _dragging = true;
+                _dragStart = _currentCell.Position;
+                _dragAction = _currentCellHover.DragAction;
+                _dragAction.OnDragStart();
+            }
 
-                // drag delta
-                else if (_dragging && _dragAction != null)
-                {
-                    Vector2 dragDelta = _currentCell.Position - _dragStart;
-                    _dragAction.OnDragDelta(dragDelta);
-                }
+            // drag end
+            else if (_dragging &&
+                Input.IsActionJustReleased("phios_drag") &&
+                _dragAction != null)
+            {
+                _dragging = false;
+                Vector2 dragDelta = _currentCell.Position - _dragStart;
+                _dragAction.OnDragDelta(dragDelta);
+                _dragAction.OnDragEnd();
+                _dragAction = null;
+            }
 
-                // scroll
-                if (!_dragging)
+            // drag delta
+            else if (_dragging && _dragAction != null)
+            {
+                Vector2 dragDelta = _currentCell.Position - _dragStart;
+                _dragAction.OnDragDelta(dragDelta);
+            }
+
+            // scroll
+            if (!_dragging)
+            {
+                int scrollDelta = (Input.IsActionPressed("phios_scroll_up") ? -1 : 0) + (Input.IsActionPressed("phios_scroll_down") ? 1 : 0);
+                if (scrollDelta != 0 &&
+                    _currentCellHover != null &&
+                    _currentCellHover.ScrollAction != null)
                 {
-                    int scrollDelta = (Input.IsActionPressed("phios_scroll_up") ? -1 : 0) + (Input.IsActionPressed("phios_scroll_down") ? 1 : 0);
-                    if (scrollDelta != 0 &&
-                        _currentCellHover != null &&
-                        _currentCellHover.ScrollAction != null)
-                    {
-                        _currentCellHover.ScrollAction.OnScrollDelta(scrollDelta);
-                    }
+                    _currentCellHover.ScrollAction.OnScrollDelta(scrollDelta);
                 }
             }
         }
