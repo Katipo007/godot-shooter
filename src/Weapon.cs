@@ -36,9 +36,15 @@ public class Weapon : Node
     {
 
         if (_reloading)
-            _ammoLabel.Text = $"Ammo:\nReloading...";
+        {
+            if (_ammoLabel != null)
+                _ammoLabel.Text = $"Ammo:\nReloading...";
+        }
         else
-            _ammoLabel.Text = $"Ammo:\n{_currentAmmo} / {_clipSize}";
+        {
+            if (_ammoLabel != null)
+                _ammoLabel.Text = $"Ammo:\n{_currentAmmo} / {_clipSize}";
+        }
 
         // fire weapon
         if (Input.IsActionJustPressed("primary_fire") && _canFire)

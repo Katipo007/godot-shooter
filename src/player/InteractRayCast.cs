@@ -49,6 +49,8 @@ public class InteractRayCast : RayCast
     /// <param name="text"></param>
     public void SetInteractionText(string text)
     {
+        if (_interactionLabel == null)
+            return;
 
         if (text.Empty())
         {
