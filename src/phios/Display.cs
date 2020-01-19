@@ -389,52 +389,61 @@ namespace Phios
             // update display meshes
             if (_updatedCells.Count > 0)
             {
-                for (int y = 0; y < DisplayHeight; y++)
+                var currentCell = _updatedCells.First;
+                Vector2 pos;
+                int x, y;
+                while (currentCell != null)
                 {
-                    for (int x = 0; x < DisplayWidth; x++)
+                    // get cell position
+                    pos = currentCell.Value.Position;
+                    x = (int) pos.x;
+                    y = (int) pos.y;
+
+                    // get top layer for cell
+                    var topLayersForCell = _topLayers[x, y];
+
+                    // get cell at top layer
+                    Cell cell = null;
+                    if (topLayersForCell.First != null)
                     {
-                        // get top layer for cell
-                        var topLayersForCell = _topLayers[x, y];
+                        cell = _cells[topLayersForCell.Last.Value][x, y];
+                    }
 
-                        // get cell at top layer
-                        Cell cell = null;
-                        if (topLayersForCell.First != null)
+                    // empty cell
+                    if (cell == null || cell.Content == "")
+                    {
+                        for (int i = 0; i < 4; i++)
                         {
-                            cell = _cells[topLayersForCell.Last.Value][x, y];
-                        }
-
-                        // empty cell
-                        if (cell == null || cell.Content == "")
-                        {
-                            for (int i = 0; i < 4; i++)
-                            {
-                                int vert = (y * DisplayWidth + x) * 4 + i;
-                                // update display mesh vertices, uvs and colours
-                                Foreground.MeshVertices[vert].x = 0;
-                                Foreground.MeshVertices[vert].y = 0;
-                                Foreground.MeshUVs[vert] = zero2;
-                                Foreground.MeshColors[vert] = ClearColor;
-                                Background.MeshColors[vert] = cell != null ? cell.BackgroundColor : ClearColor;
-                            }
-                        }
-                        // filled cell
-                        else
-                        {
-                            var glyph = Font.GetGlyph(cell.Content);
-                            for (int i = 0; i < 4; i++)
-                            {
-                                int vert = (y * DisplayWidth + x) * 4 + i;
-
-                                // update display mesh vertices, uvs and colours
-                                Foreground.MeshVertices[vert].x = x * _quadWidth + glyph.Vertices[i].x * _quadWidth;
-                                Foreground.MeshVertices[vert].y = -y * _quadHeight + glyph.Vertices[i].y * _quadHeight - _quadHeight;
-                                Foreground.MeshUVs[vert] = glyph.UVs[i];
-                                Foreground.MeshColors[vert] = cell.ForegroundColor;
-                                Background.MeshColors[vert] = cell.BackgroundColor;
-                            }
+                            int vert = (y * DisplayWidth + x) * 4 + i;
+                            // update display mesh vertices, uvs and colours
+                            Foreground.MeshVertices[vert].x = 0;
+                            Foreground.MeshVertices[vert].y = 0;
+                            Foreground.MeshUVs[vert] = zero2;
+                            Foreground.MeshColors[vert] = ClearColor;
+                            Background.MeshColors[vert] = cell != null ? cell.BackgroundColor : ClearColor;
                         }
                     }
+                    // filled cell
+                    else
+                    {
+                        var glyph = Font.GetGlyph(cell.Content);
+                        for (int i = 0; i < 4; i++)
+                        {
+                            int vert = (y * DisplayWidth + x) * 4 + i;
+
+                            // update display mesh vertices, uvs and colours
+                            Foreground.MeshVertices[vert].x = x * _quadWidth + glyph.Vertices[i].x * _quadWidth;
+                            Foreground.MeshVertices[vert].y = -y * _quadHeight + glyph.Vertices[i].y * _quadHeight - _quadHeight;
+                            Foreground.MeshUVs[vert] = glyph.UVs[i];
+                            Foreground.MeshColors[vert] = cell.ForegroundColor;
+                            Background.MeshColors[vert] = cell.BackgroundColor;
+                        }
+                    }
+
+                    // move to the next updated cell
+                    currentCell = currentCell.Next;
                 }
+                _updatedCells.Clear();
 
                 // apply display mesh updates
                 Background.UpdateMesh();
