@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/player/Player.tscn" type="PackedScene" id=1]
+
+[node name="Vessel" type="Spatial"]
+
+[node name="CSGCombiner" type="CSGCombiner" parent="."]
+use_collision = true
+
+[node name="CSGBox2" type="CSGBox" parent="CSGCombiner"]
+transform = Transform( 6.946, 0, 0, 0, 2.045, 0, 0, 0, 2.924, 0, 0, 0 )
+operation = 2
+use_collision = true
+invert_faces = true
+
+[node name="CSGBox" type="CSGBox" parent="CSGCombiner"]
+transform = Transform( 4, 0, 0, 0, 2.04494, 0, 0, 0, 5.6, 12, 0, 0 )
+invert_faces = true
+
+[node name="CSGBox3" type="CSGBox" parent="CSGCombiner"]
+transform = Transform( 0.96, 0, 0, 0, 2.045, 0, 0, 0, 1.344, 8, 0, 0 )
+invert_faces = true
+width = 2.65696
+
+[node name="CSGCylinder" type="CSGCylinder" parent="CSGCombiner"]
+transform = Transform( -4.37114e-008, -1, 0, 2.03147, -8.87983e-008, 0, 0, 0, 2.03147, 16.3602, -0.55829, 0 )
+invert_faces = true
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
