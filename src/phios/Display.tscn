@@ -1,10 +1,12 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/phios/Display.cs" type="Script" id=1]
 [ext_resource path="res://assets/fonts/source_code_pro/source_code_pro.tres" type="Resource" id=2]
-[ext_resource path="res://src/phios/DisplayMesh.cs" type="Script" id=3]
 
-[sub_resource type="SpatialMaterial" id=1]
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
+
+[sub_resource type="SpatialMaterial" id=2]
 render_priority = -1
 flags_transparent = true
 flags_unshaded = true
@@ -12,66 +14,25 @@ flags_do_not_receive_shadows = true
 flags_disable_ambient_light = true
 vertex_color_use_as_albedo = true
 
-[sub_resource type="Curve" id=2]
-_data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
-
-[sub_resource type="ArrayMesh" id=3]
-surfaces/0 = {
-"aabb": AABB( 0, -3.17647, 0, 4, 3.17648, 1e-005 ),
-"array_data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 76, 75, 75, 192, 0, 0, 0, 0, 0, 0, 0, 0, 76, 75, 75, 192, 0, 0, 0, 0 ),
-"array_index_data": PoolByteArray( 0, 0, 1, 0, 2, 0, 2, 0, 3, 0, 0, 0 ),
-"blend_shape_data": [  ],
-"format": 97537,
-"index_count": 6,
-"name": "Editor Preview",
-"primitive": 4,
-"skeleton_aabb": [  ],
-"vertex_count": 4
-}
-
-[sub_resource type="ArrayMesh" id=4]
-surfaces/0 = {
-"aabb": AABB( 0, -3.17647, -0.001, 4, 3.17648, 9.99996e-006 ),
-"array_data": PoolByteArray( 0, 0, 0, 0, 0, 0, 0, 0, 111, 18, 131, 186, 0, 0, 128, 64, 0, 0, 0, 0, 111, 18, 131, 186, 0, 0, 128, 64, 76, 75, 75, 192, 111, 18, 131, 186, 0, 0, 0, 0, 76, 75, 75, 192, 111, 18, 131, 186 ),
-"array_index_data": PoolByteArray( 0, 0, 1, 0, 2, 0, 2, 0, 3, 0, 0, 0 ),
-"blend_shape_data": [  ],
-"format": 97537,
-"index_count": 6,
-"name": "Editor Preview",
-"primitive": 4,
-"skeleton_aabb": [  ],
-"vertex_count": 4
-}
-
-[sub_resource type="Environment" id=5]
+[sub_resource type="Environment" id=3]
 background_energy = 0.0
 
-[sub_resource type="BoxShape" id=6]
+[sub_resource type="BoxShape" id=4]
 resource_local_to_scene = true
 extents = Vector3( 2, 1.58824, 0.05 )
 
 [node name="Display" type="Spatial"]
 script = ExtResource( 1 )
 Font = ExtResource( 2 )
-_nInitialLayers = 1
 DisplayHeight = 30
-BackgroundMaterial = SubResource( 1 )
-ColorLerpCurve = SubResource( 2 )
+ColorLerpCurve = SubResource( 1 )
 _quadScale = 0.05
-
-[node name="Foreground" type="MeshInstance" parent="."]
-mesh = SubResource( 3 )
-material/0 = null
-script = ExtResource( 3 )
-
-[node name="Background" type="MeshInstance" parent="."]
-mesh = SubResource( 4 )
-material/0 = null
-script = ExtResource( 3 )
+BackgroundMaterial = SubResource( 2 )
+_nInitialLayers = 1
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5 )
-environment = SubResource( 5 )
+environment = SubResource( 3 )
 projection = 1
 near = 0.01
 
@@ -81,4 +42,4 @@ collision_mask = 0
 
 [node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -1.58824, 0 )
-shape = SubResource( 6 )
+shape = SubResource( 4 )

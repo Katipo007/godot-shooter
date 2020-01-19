@@ -7,7 +7,7 @@ namespace Phios
 {
 
     [Tool]
-    public class DisplayMesh : MeshInstance
+    public class DisplayMesh : MeshInstance, IDisplayMesh
     {
         public Display Display { get; private set; }
 

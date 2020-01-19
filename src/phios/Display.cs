@@ -16,9 +16,6 @@ namespace Phios
         [Export]
         public Material BackgroundMaterial { get; private set; }
 
-        public DisplayMesh Background { get; private set; }
-        public DisplayMesh Foreground { get; private set; }
-
         [Export(PropertyHint.Range, "4,1000,1,allow_greater")]
         public int DisplayWidth { get; private set; } = 80;
         [Export(PropertyHint.Range, "4,1000,1,allow_greater")]
@@ -32,10 +29,21 @@ namespace Phios
         [Export]
         public Color ClearColor { get; private set; } = Color.Color8(0, 0, 0, 255);
 
+        //
+
         [Export]
         private float _quadScale = 0.5f;
         private float _quadWidth;
         private float _quadHeight;
+
+        /// <summary>
+        /// Set if this if you expect the display to change frequently.
+        /// </summary>
+        [Export]
+        private readonly bool _dynamic = false;
+
+        private IDisplayMesh _backgroundMesh { get; set; }
+        private IDisplayMesh _foregroundMesh { get; set; }
 
         [Export(PropertyHint.Range, "0,10,1,allow_greater,allow_lesser")]
         private uint _nReservedLayers = 1;
@@ -84,25 +92,11 @@ namespace Phios
                 if (Font == null || !(Font is BitmapFont))
                     return;
 
-                Background = GetNode("Background") as DisplayMesh;
-                Foreground = GetNode("Foreground") as DisplayMesh;
+                _foregroundMesh = GetNode("Foreground") as DisplayMesh;
+                _backgroundMesh = GetNode("Background") as DisplayMesh;
 
                 _quadWidth = _quadScale;
                 _quadHeight = Mathf.Clamp(((float) Font.Get("GlyphHeight") / (float) Font.Get("GlyphWidth")) * ((float) Font.Get("QuadHeightScale")), 0f, 100000f) * _quadScale;
-
-                if (Background != null)
-                {
-                    Background.UpdateEditor(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
-                }
-                else
-                    GD.PrintErr("Failed to get Background DisplayMesh");
-
-                if (Foreground != null)
-                {
-                    Foreground.UpdateEditor(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
-                }
-                else
-                    GD.PrintErr("Failed to get Foreground DisplayMesh");
 
                 // initialize collision shape
                 CollisionShape collisionShape = GetNode<CollisionShape>("StaticBody/CollisionShape");
@@ -117,12 +111,6 @@ namespace Phios
         {
             if (Font == null || !(Font is BitmapFont))
                 return "No font is set!";
-
-            if (!HasNode("Background") || !(GetNode("Background") is MeshInstance))
-                return "Missing a 'MeshInstance' with name 'Background'";
-
-            if (!HasNode("Foreground") || !(GetNode("Foreground") is MeshInstance))
-                return "Missing a 'MeshInstance' with name 'Foreground'";
 
             if (!HasNode("Camera") || !(GetNode("Camera") is Camera))
                 return "Missing a 'Camera' with name 'Camera'";
@@ -148,17 +136,31 @@ namespace Phios
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
+            if (_dynamic)
+            {
+            }
+            else
+            {
+                _backgroundMesh = new DisplayMesh();
+                _foregroundMesh = new DisplayMesh();
+            }
+            ((Node) _foregroundMesh).Name = "ForegroundMesh";
+            ((Node) _backgroundMesh).Name = "BackgroundMesh";
+            AddChild((Node) _foregroundMesh);
+            AddChild((Node) _backgroundMesh);
+
             if (Engine.EditorHint)
                 return;
 
             Font.Init();
 
             if (!Font.Loaded)
+            {
                 GD.PushError("Font is not loaded yet!");
+                return;
+            }
 
             MainCamera = GetNode<Camera>("Camera");
-            Background = GetNode<DisplayMesh>("Background");
-            Foreground = GetNode<DisplayMesh>("Foreground");
 
             // calculate quad size
             _quadWidth = _quadScale;
@@ -173,10 +175,10 @@ namespace Phios
             }
 
             // initialize display meshes
-            Background.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
-            Foreground.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
-            Background.MaterialOverride = BackgroundMaterial;
-            Foreground.MaterialOverride = Font.BitmapFontMaterial;
+            _backgroundMesh.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
+            _foregroundMesh.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
+            _backgroundMesh.MaterialOverride = BackgroundMaterial;
+            _foregroundMesh.MaterialOverride = Font.BitmapFontMaterial;
 
             // initialize collision shape
             CollisionShape collisionShape = GetNode<CollisionShape>("StaticBody/CollisionShape");
@@ -184,7 +186,7 @@ namespace Phios
             collisionShape.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * -_quadHeight * 0.5f, 0);
 
             // update camera orthographic size
-            MainCamera.SetOrthogonal(Mathf.Max(DisplayHeight * _quadHeight * 1.0f, Background.Translation.y), 0, 2);
+            MainCamera.SetOrthogonal(Mathf.Max(DisplayHeight * _quadHeight * 1.0f, 0), 0, 2);
             MainCamera.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * -_quadHeight * 0.5f, 0.5f);
 
             GD.Print($"Phios Display size: {DisplayWidth}x{DisplayHeight}");
@@ -417,11 +419,11 @@ namespace Phios
                         {
                             int vert = (y * DisplayWidth + x) * 4 + i;
                             // update display mesh vertices, uvs and colours
-                            Foreground.MeshVertices[vert].x = 0;
-                            Foreground.MeshVertices[vert].y = 0;
-                            Foreground.MeshUVs[vert] = zero2;
-                            Foreground.MeshColors[vert] = ClearColor;
-                            Background.MeshColors[vert] = cell != null ? cell.BackgroundColor : ClearColor;
+                            _foregroundMesh.MeshVertices[vert].x = 0;
+                            _foregroundMesh.MeshVertices[vert].y = 0;
+                            _foregroundMesh.MeshUVs[vert] = zero2;
+                            _foregroundMesh.MeshColors[vert] = ClearColor;
+                            _backgroundMesh.MeshColors[vert] = cell != null ? cell.BackgroundColor : ClearColor;
                         }
                     }
                     // filled cell
@@ -433,18 +435,18 @@ namespace Phios
                             int vert = (y * DisplayWidth + x) * 4 + i;
 
                             // update display mesh vertices, uvs and colours
-                            Foreground.MeshVertices[vert].x = x * _quadWidth + glyph.Vertices[i].x * _quadWidth;
-                            Foreground.MeshVertices[vert].y = -y * _quadHeight + glyph.Vertices[i].y * _quadHeight - _quadHeight;
-                            Foreground.MeshUVs[vert] = glyph.UVs[i];
-                            Foreground.MeshColors[vert] = cell.ForegroundColor;
-                            Background.MeshColors[vert] = cell.BackgroundColor;
+                            _foregroundMesh.MeshVertices[vert].x = x * _quadWidth + glyph.Vertices[i].x * _quadWidth;
+                            _foregroundMesh.MeshVertices[vert].y = -y * _quadHeight + glyph.Vertices[i].y * _quadHeight - _quadHeight;
+                            _foregroundMesh.MeshUVs[vert] = glyph.UVs[i];
+                            _foregroundMesh.MeshColors[vert] = cell.ForegroundColor;
+                            _backgroundMesh.MeshColors[vert] = cell.BackgroundColor;
                         }
                     }
                 }
 
                 // apply display mesh updates
-                Background.UpdateMesh();
-                Foreground.UpdateMesh();
+                _backgroundMesh.UpdateMesh();
+                _foregroundMesh.UpdateMesh();
             }
         }
     } // end class
