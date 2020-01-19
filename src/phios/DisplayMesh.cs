@@ -32,6 +32,7 @@ namespace Phios
 
             this.Mesh = new ArrayMesh();
             this._mesh = this.Mesh as ArrayMesh;
+            this.CastShadow = ShadowCastingSetting.Off;
         }
 
         public void Initialize(int width, int height, float quadWidth, float quadHeight, float z)
