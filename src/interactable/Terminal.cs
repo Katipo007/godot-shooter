@@ -66,4 +66,16 @@ public class Terminal : Interactable
             }
         }
     }
+
+    public override void _Process(float delta)
+    {
+        if (Engine.EditorHint)
+            return;
+
+        string options = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var cell = Display.GetCell(0, (int) GD.Randi() % Display.DisplayWidth, (int) GD.Randi() % Display.DisplayHeight, false);
+
+        if (cell != null)
+            cell.SetContent(options.Substr((int) (GD.Randi() % options.Length).Clamp(0, options.Length - 1), 1), Colors.Black, Colors.White, 0.5f, Colors.White);
+    }
 }
