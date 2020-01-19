@@ -86,6 +86,9 @@ namespace Phios
             {
                 Owner.AddCellAsTopLayer(this);
             }
+
+            // mark as updated
+            Owner.MarkCellAsUpdated(this);
         }
 
         public void Update(float deltaTime)
@@ -99,6 +102,8 @@ namespace Phios
                     Content = (_targetContent.Trim().Length > 0 || Content.Trim().Length > 0) ? _fades.Substring(Mathf.RoundToInt((_fadeLeft / _fadeMax) * (_fades.Length - 1)), 1) : _targetContent;
                     ForegroundColor = _targetColor.LinearInterpolate(_fadeColor, Owner.ColorLerpCurve.Interpolate(_fadeLeft / _fadeMax));
                     _fadeLeft -= deltaTime;
+
+                    Owner.MarkCellAsUpdated(this);
                 }
                 // fade finished
                 else
@@ -107,6 +112,11 @@ namespace Phios
                     if (!_fadeFinished && _targetContent == "")
                     {
                         Owner.RemoveCellAsTopLayer(this);
+                    }
+
+                    if (!_fadeFinished)
+                    {
+                        Owner.MarkCellAsUpdated(this);
                     }
 
                     _fadeFinished = true;

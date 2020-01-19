@@ -47,6 +47,13 @@ namespace Phios
         private SC.Dictionary<int, Cell[, ]> _cells = new SC.Dictionary<int, Cell[, ]>();
         private SC.LinkedList<Cell> _cellList = new SC.LinkedList<Cell>();
         private SC.LinkedList<int>[, ] _topLayers;
+
+        /// <summary>
+        /// Stores cells which have had their states updated and need re-rendering
+        /// </summary>
+        /// <typeparam name="Cell"></typeparam>
+        /// <returns></returns>
+        private SC.LinkedList<Cell> _updatedCells = new SC.LinkedList<Cell>();
         private Vector3 zero3 = Vector3.Zero;
         private Vector2 zero2 = Vector2.Zero;
 
@@ -216,6 +223,7 @@ namespace Phios
             cell.Position = new Vector2(x, y);
             cell.Owner = this;
             _cellList.AddLast(cell);
+            _updatedCells.AddLast(cell);
             return cell;
         }
 
@@ -321,7 +329,11 @@ namespace Phios
             {
                 topLayersForCell.Remove(c.Layer);
             }
+        }
 
+        public void MarkCellAsUpdated(Cell c)
+        {
+            _updatedCells.AddLast(c);
         }
 
         public SC.LinkedList<int> GetTopLayersForCell(int x, int y)
@@ -363,17 +375,20 @@ namespace Phios
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(float delta)
         {
-            if (!Engine.EditorHint)
-            {
-                // update cells
-                SC.LinkedListNode<Cell> cellNode = _cellList.First;
-                while (cellNode != null)
-                {
-                    cellNode.Value.Update(delta);
-                    cellNode = cellNode.Next;
-                }
+            if (Engine.EditorHint)
+                return;
 
-                // update display meshes
+            // process cells
+            SC.LinkedListNode<Cell> cellNode = _cellList.First;
+            while (cellNode != null)
+            {
+                cellNode.Value.Update(delta);
+                cellNode = cellNode.Next;
+            }
+
+            // update display meshes
+            if (_updatedCells.Count > 0)
+            {
                 for (int y = 0; y < DisplayHeight; y++)
                 {
                     for (int x = 0; x < DisplayWidth; x++)
@@ -424,15 +439,6 @@ namespace Phios
                 // apply display mesh updates
                 Background.UpdateMesh();
                 Foreground.UpdateMesh();
-
-                // take screenshots
-                if (Input.IsActionJustPressed("screenshot"))
-                {
-                    var image = GetViewport().GetTexture().GetData();
-                    image.FlipY();
-                    image.SavePng("user://screenshots/phiosScreenshot.png");
-                    image = null;
-                }
             }
         }
     } // end class
