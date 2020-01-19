@@ -70,43 +70,6 @@ namespace Phios
 
         }
 
-        [Export]
-        private bool _EditorUpdate
-        {
-            get { return false; }
-            set
-            {
-                if (!Engine.EditorHint)
-                    return;
-
-                if (value != true)
-                    return;
-
-                var warning = _GetConfigurationWarning();
-                if (warning != "")
-                {
-                    GD.PrintErr(warning);
-                    return;
-                }
-
-                if (Font == null || !(Font is BitmapFont))
-                    return;
-
-                _foregroundMesh = GetNode("Foreground") as DisplayMesh;
-                _backgroundMesh = GetNode("Background") as DisplayMesh;
-
-                _quadWidth = _quadScale;
-                _quadHeight = Mathf.Clamp(((float) Font.Get("GlyphHeight") / (float) Font.Get("GlyphWidth")) * ((float) Font.Get("QuadHeightScale")), 0f, 100000f) * _quadScale;
-
-                // initialize collision shape
-                CollisionShape collisionShape = GetNode<CollisionShape>("StaticBody/CollisionShape");
-                (collisionShape.Shape as BoxShape).SetExtents(new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * _quadHeight * 0.5f, 0.05f));
-                collisionShape.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * -_quadHeight * 0.5f, 0);
-
-                GD.Print($"{Name} Display updated");
-            }
-        }
-
         public override string _GetConfigurationWarning()
         {
             if (Font == null || !(Font is BitmapFont))
@@ -151,36 +114,39 @@ namespace Phios
             AddChild((Node) _foregroundMesh);
             AddChild((Node) _backgroundMesh);
 
-            if (Engine.EditorHint)
-                return;
-
-            Font.Init();
-
-            if (!Font.Loaded)
+            if (!Engine.EditorHint)
             {
-                GD.PushError("Font is not loaded yet!");
-                return;
+                Font.Init();
+
+                if (!Font.Loaded)
+                {
+                    GD.PushError("Font is not loaded yet!");
+                    return;
+                }
             }
 
             MainCamera = GetNode<Camera>("Camera");
 
             // calculate quad size
             _quadWidth = _quadScale;
-            _quadHeight = (Font.GlyphHeight / Font.GlyphWidth) * (Font.QuadHeightScale) * _quadScale;
+            _quadHeight = ((float) Font.Get("GlyphHeight") / (float) Font.Get("GlyphWidth")) * ((float) Font.Get("QuadHeightScale")) * _quadScale;
 
             // derive display height from width
             if (AutoSize)
             {
                 var screen = GetViewport();
-                int maxDisplayHeight = Mathf.RoundToInt((screen.Size.y / screen.Size.x) * DisplayWidth / _quadHeight);
-                DisplayHeight = maxDisplayHeight;
+                if (screen != null)
+                {
+                    int maxDisplayHeight = Mathf.RoundToInt((screen.Size.y / screen.Size.x) * DisplayWidth / _quadHeight);
+                    DisplayHeight = maxDisplayHeight;
+                }
             }
 
             // initialize display meshes
             _backgroundMesh.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, -0.001f);
             _foregroundMesh.Initialize(DisplayWidth, DisplayHeight, _quadWidth, _quadHeight, 0f);
             _backgroundMesh.MaterialOverride = BackgroundMaterial;
-            _foregroundMesh.MaterialOverride = Font.BitmapFontMaterial;
+            _foregroundMesh.MaterialOverride = (Material) Font.Get("BitmapFontMaterial");
 
             // initialize collision shape
             CollisionShape collisionShape = GetNode<CollisionShape>("StaticBody/CollisionShape");

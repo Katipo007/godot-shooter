@@ -5,8 +5,6 @@ using SC = System.Collections.Generic;
 
 namespace Phios
 {
-
-    [Tool]
     public class DisplayMesh : MeshInstance, IDisplayMesh
     {
         public Display Display { get; private set; }
@@ -18,7 +16,6 @@ namespace Phios
         public Color[] MeshColors { get; private set; }
 
         private ArrayMesh _mesh;
-        private MeshDataTool _mdt = new MeshDataTool();
         private int[] _indexes;
         private GC.Array _arrays;
 
@@ -37,9 +34,6 @@ namespace Phios
 
         public void Initialize(int width, int height, float quadWidth, float quadHeight, float z)
         {
-            if (Engine.EditorHint)
-                return;
-
             // setup data arrays
             MeshVertices = new Vector3[width * height * 4];
             MeshUVs = new Vector2[width * height * 4];
@@ -92,9 +86,6 @@ namespace Phios
 
         public void UpdateMesh()
         {
-            if (Engine.EditorHint)
-                return;
-
             // remove old surface
             if (_mesh.GetSurfaceCount() > 0)
                 _mesh.SurfaceRemove(0);
@@ -106,56 +97,5 @@ namespace Phios
             _arrays[(int) Mesh.ArrayType.Index] = _indexes;
             _mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, _arrays);
         }
-
-        public override string _GetConfigurationWarning()
-        {
-            if (Mesh == null || !(Mesh is ArrayMesh))
-            {
-                return "DisplayMesh.Mesh is not an array mesh!";
-            }
-
-            return "";
-        }
-
-        public void UpdateEditor(int width, int height, float quadWidth, float quadHeight, float z)
-        {
-            if (!Engine.EditorHint)
-                return;
-
-            if (!(Mesh is ArrayMesh))
-            {
-                GD.PrintErr("DisplayMesh.Mesh is not an array mesh!");
-                return;
-            }
-
-            var m = Mesh as ArrayMesh;
-            // remove old surface
-            if (m.GetSurfaceCount() > 0)
-                m.SurfaceRemove(0);
-
-            var a = new GC.Array();
-            a.Resize((int) Mesh.ArrayType.Max);
-            a[(int) Mesh.ArrayType.Vertex] = new Vector3[]
-            {
-                new Vector3(0, 0, z),
-                new Vector3(width * quadWidth, 0, z),
-                new Vector3(width * quadWidth, height * -quadHeight, z),
-                new Vector3(0, height * -quadHeight, z)
-            };
-            a[(int) Mesh.ArrayType.Index] = new int[]
-            {
-                0,
-                1,
-                2,
-                2,
-                3,
-                0
-            };
-            m.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, a);
-            m.SurfaceSetName(0, "Editor Preview");
-
-            GD.Print($"{Name} DisplayMesh updated");
-        }
-
     } // end class
 } // end namespace

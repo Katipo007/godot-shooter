@@ -31,10 +31,12 @@ BackgroundMaterial = SubResource( 2 )
 _nInitialLayers = 1
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -1.58824, 0.5 )
 environment = SubResource( 3 )
 projection = 1
-near = 0.01
+size = 3.17647
+near = 0.0
+far = 2.0
 
 [node name="StaticBody" type="StaticBody" parent="."]
 collision_layer = 4

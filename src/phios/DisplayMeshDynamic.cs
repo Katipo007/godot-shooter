@@ -6,7 +6,6 @@ using SC = System.Collections.Generic;
 namespace Phios
 {
 
-    [Tool]
     public class DisplayMeshDynamic : ImmediateGeometry, IDisplayMesh
     {
         public Display Display { get; private set; }
@@ -22,18 +21,12 @@ namespace Phios
         // Called when the node enters the scene tree for the first time.
         public override void _Ready()
         {
-            if (Engine.EditorHint)
-                return;
-
             Display = GetParent<Display>();
             this.CastShadow = ShadowCastingSetting.Off;
         }
 
         public void Initialize(int width, int height, float quadWidth, float quadHeight, float z)
         {
-            if (Engine.EditorHint)
-                return;
-
             _len = width * height * 4;
 
             // setup data arrays
