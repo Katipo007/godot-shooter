@@ -138,6 +138,8 @@ namespace Phios
         {
             if (_dynamic)
             {
+                _backgroundMesh = new DisplayMeshDynamic();
+                _foregroundMesh = new DisplayMeshDynamic();
             }
             else
             {

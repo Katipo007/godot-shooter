@@ -67,6 +67,7 @@
     <Compile Include="src\phios\Display.cs" />
     <Compile Include="src\phios\IDisplayMesh.cs" />
     <Compile Include="src\phios\DisplayMesh.cs" />
+    <Compile Include="src\phios\DisplayMeshDynamic.cs" />
     <Compile Include="src\phios\BitmapFont.cs" />
     <Compile Include="src\phios\Mouse.cs" />
     <Compile Include="src\player\InteractRayCast.cs" />
