@@ -29,8 +29,6 @@ namespace Phios
         [Export]
         public Curve ColorLerpCurve { get; set; }
 
-        public bool Initialized { get; private set; } = false;
-
         [Export]
         public Color ClearColor { get; private set; } = Color.Color8(0, 0, 0, 255);
 
@@ -208,10 +206,6 @@ namespace Phios
                 _cells.Add(layerIndex, layer);
             }
             _nLayers = _nInitialLayers;
-
-            // we are now initialized
-            Initialized = true;
-
             GetCell(0, 1, 1).SetContent("H", Colors.White, Colors.Black);
             GetCell(0, 2, 1).SetContent("e", Colors.White, Colors.Black);
             GetCell(0, 3, 1).SetContent("l", Colors.White, Colors.Black);
@@ -238,174 +232,141 @@ namespace Phios
 
         public int GetNumLayers()
         {
-            if (Initialized)
-                return _nLayers;
-            else
-                throw new Exception("Display is not yet initialized!");
+            return _nLayers;
         }
 
         public Cell GetCell(int layer, int x, int y)
         {
-            if (Initialized)
+            // get layer cells, add if not already exists
+            Cell[, ] layerCells = null;
+            if (!_cells.TryGetValue(layer, out layerCells))
             {
-                // get layer cells, add if not already exists
-                Cell[, ] layerCells = null;
-                if (!_cells.TryGetValue(layer, out layerCells))
-                {
-                    layerCells = new Cell[DisplayWidth, DisplayHeight];
-                    _cells.Add(layer, layerCells);
-                    _nLayers = Mathf.Max(layer + 1, _nLayers);
-                }
-
-                // get cell, add if not already exists
-                if (x >= 0 && y >= 0 && x < DisplayWidth && y < DisplayHeight)
-                {
-                    Cell cell = layerCells[x, y];
-                    if (cell == null)
-                    {
-                        cell = layerCells[x, y] = CreateCell(layer, x, y);
-                    }
-
-                    return cell;
-                }
-                // position out of bounds
-                else
-                {
-                    return null;
-                }
+                layerCells = new Cell[DisplayWidth, DisplayHeight];
+                _cells.Add(layer, layerCells);
+                _nLayers = Mathf.Max(layer + 1, _nLayers);
             }
+
+            // get cell, add if not already exists
+            if (x >= 0 && y >= 0 && x < DisplayWidth && y < DisplayHeight)
+            {
+                Cell cell = layerCells[x, y];
+                if (cell == null)
+                {
+                    cell = layerCells[x, y] = CreateCell(layer, x, y);
+                }
+
+                return cell;
+            }
+            // position out of bounds
             else
             {
-                throw new Exception("Display is not yet initialized!");
+                return null;
             }
         }
 
         public void AddCellAsTopLayer(Cell c)
         {
-            if (Initialized)
+
+            // get top layers for cell
+            SC.LinkedList<int> topLayersForCell = _topLayers[(int) c.Position.x, (int) c.Position.y];
+
+            // add layer to end
+            if (topLayersForCell.Count == 0 ||
+                (topLayersForCell.Last.Value >= 0 && topLayersForCell.Last.Value < c.Layer) ||
+                (topLayersForCell.Last.Value >= 0 && c.Layer < 0) ||
+                (topLayersForCell.Last.Value < 0 && c.Layer < 0 && c.Layer < topLayersForCell.Last.Value))
             {
-                // get top layers for cell
-                SC.LinkedList<int> topLayersForCell = _topLayers[(int) c.Position.x, (int) c.Position.y];
-
-                // add layer to end
-                if (topLayersForCell.Count == 0 ||
-                    (topLayersForCell.Last.Value >= 0 && topLayersForCell.Last.Value < c.Layer) ||
-                    (topLayersForCell.Last.Value >= 0 && c.Layer < 0) ||
-                    (topLayersForCell.Last.Value < 0 && c.Layer < 0 && c.Layer < topLayersForCell.Last.Value))
-                {
-                    topLayersForCell.AddLast(c.Layer);
-                    return;
-                }
-                // add layer to beginning
-                else if (
-                    (topLayersForCell.First.Value >= 0 && c.Layer >= 0 && topLayersForCell.First.Value > c.Layer) ||
-                    (topLayersForCell.First.Value < 0 && c.Layer >= 0) ||
-                    (topLayersForCell.First.Value < 0 && c.Layer < 0 && topLayersForCell.First.Value < c.Layer))
-                {
-                    topLayersForCell.AddFirst(c.Layer);
-                    return;
-                }
-
-                // insert layer
-                SC.LinkedListNode<int> current = topLayersForCell.First;
-                while (current.Next != null)
-                {
-
-                    // layer already exists
-                    if (current.Value == c.Layer || current.Next.Value == c.Layer)
-                    {
-                        return;
-                    }
-
-                    // found a position to insert layer
-                    if ((current.Value >= 0 && c.Layer >= 0 && current.Next.Value >= 0 && current.Value < c.Layer && current.Next.Value > c.Layer) ||
-                        (current.Value >= 0 && c.Layer >= 0 && current.Next.Value < 0 && current.Value < c.Layer) ||
-                        (current.Value >= 0 && c.Layer < 0 && current.Next.Value < 0 && current.Next.Value < c.Layer) ||
-                        (current.Value < 0 && c.Layer < 0 && current.Value > c.Layer && current.Next.Value < c.Layer))
-                    {
-                        topLayersForCell.AddAfter(current, c.Layer);
-                        return;
-                    }
-
-                    current = current.Next;
-                }
-
+                topLayersForCell.AddLast(c.Layer);
+                return;
             }
-            else
+            // add layer to beginning
+            else if (
+                (topLayersForCell.First.Value >= 0 && c.Layer >= 0 && topLayersForCell.First.Value > c.Layer) ||
+                (topLayersForCell.First.Value < 0 && c.Layer >= 0) ||
+                (topLayersForCell.First.Value < 0 && c.Layer < 0 && topLayersForCell.First.Value < c.Layer))
             {
-                throw new Exception("Display is not yet initialized!");
+                topLayersForCell.AddFirst(c.Layer);
+                return;
+            }
+
+            // insert layer
+            SC.LinkedListNode<int> current = topLayersForCell.First;
+            while (current.Next != null)
+            {
+
+                // layer already exists
+                if (current.Value == c.Layer || current.Next.Value == c.Layer)
+                {
+                    return;
+                }
+
+                // found a position to insert layer
+                if ((current.Value >= 0 && c.Layer >= 0 && current.Next.Value >= 0 && current.Value < c.Layer && current.Next.Value > c.Layer) ||
+                    (current.Value >= 0 && c.Layer >= 0 && current.Next.Value < 0 && current.Value < c.Layer) ||
+                    (current.Value >= 0 && c.Layer < 0 && current.Next.Value < 0 && current.Next.Value < c.Layer) ||
+                    (current.Value < 0 && c.Layer < 0 && current.Value > c.Layer && current.Next.Value < c.Layer))
+                {
+                    topLayersForCell.AddAfter(current, c.Layer);
+                    return;
+                }
+
+                current = current.Next;
             }
         }
 
         public void RemoveCellAsTopLayer(Cell c)
         {
-            if (Initialized)
-            {
-                // get top layers for cell
-                SC.LinkedList<int> topLayersForCell = _topLayers[(int) c.Position.x, (int) c.Position.y];
+            // get top layers for cell
+            SC.LinkedList<int> topLayersForCell = _topLayers[(int) c.Position.x, (int) c.Position.y];
 
-                // remove layer
-                if (topLayersForCell.Contains(c.Layer))
-                {
-                    topLayersForCell.Remove(c.Layer);
-                }
-            }
-            else
+            // remove layer
+            if (topLayersForCell.Contains(c.Layer))
             {
-                throw new Exception("Display is not yet initialized!");
+                topLayersForCell.Remove(c.Layer);
             }
+
         }
 
         public SC.LinkedList<int> GetTopLayersForCell(int x, int y)
         {
-            if (Initialized)
+
+            if (x >= 0 && y >= 0 && x < DisplayWidth && y < DisplayHeight)
             {
-                if (x >= 0 && y >= 0 && x < DisplayWidth && y < DisplayHeight)
-                {
-                    return _topLayers[x, y];
-                }
-                else
-                {
-                    return new SC.LinkedList<int>();
-                }
+                return _topLayers[x, y];
             }
             else
             {
-                throw new Exception("Display is not yet initialized!");
+                return new SC.LinkedList<int>();
             }
+
         }
 
         public Color GetBackgroundColorForCell(int x, int y, params int[] excludedLayers)
         {
-            if (Initialized)
-            {
-                SC.List<int> excludedLayersList = new SC.List<int>(excludedLayers);
 
-                // get background color of cell previous to excluded layers
-                SC.LinkedList<int> topLayer = GetTopLayersForCell(x, y);
-                if (topLayer.First != null && !excludedLayersList.Contains(topLayer.First.Value))
+            SC.List<int> excludedLayersList = new SC.List<int>(excludedLayers);
+
+            // get background color of cell previous to excluded layers
+            SC.LinkedList<int> topLayer = GetTopLayersForCell(x, y);
+            if (topLayer.First != null && !excludedLayersList.Contains(topLayer.First.Value))
+            {
+                SC.LinkedListNode<int> topLayerNode = topLayer.Last;
+                while (excludedLayersList.Contains(topLayerNode.Value))
                 {
-                    SC.LinkedListNode<int> topLayerNode = topLayer.Last;
-                    while (excludedLayersList.Contains(topLayerNode.Value))
-                    {
-                        topLayerNode = topLayerNode.Previous;
-                    }
-                    Cell cell = GetCell(topLayerNode.Value, x, y);
-                    return (cell != null) ? cell.BackgroundColor : ClearColor;
+                    topLayerNode = topLayerNode.Previous;
                 }
+                Cell cell = GetCell(topLayerNode.Value, x, y);
+                return (cell != null) ? cell.BackgroundColor : ClearColor;
+            }
 
-                return ClearColor;
-            }
-            else
-            {
-                throw new Exception("Display is not yet initialized!");
-            }
+            return ClearColor;
+
         }
 
         // Called every frame. 'delta' is the elapsed time since the previous frame.
         public override void _Process(float delta)
         {
-            if (!Engine.EditorHint && Initialized)
+            if (!Engine.EditorHint)
             {
                 // update cells
                 SC.LinkedListNode<Cell> cellNode = _cellList.First;
@@ -476,11 +437,6 @@ namespace Phios
                     image = null;
                 }
             }
-        }
-
-        public bool IsInitialized()
-        {
-            return Initialized;
         }
     } // end class
 } // end namespace

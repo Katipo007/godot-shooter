@@ -91,7 +91,7 @@ namespace Phios
         public void Update(float deltaTime)
         {
             // display initialized
-            if (Owner != null && Owner.Initialized)
+            if (Owner != null)
             {
                 // fade
                 if (_fadeLeft > 0f)
