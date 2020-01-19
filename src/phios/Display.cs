@@ -42,8 +42,8 @@ namespace Phios
         [Export]
         private readonly bool _dynamic = false;
 
-        private IDisplayMesh _backgroundMesh { get; set; }
-        private IDisplayMesh _foregroundMesh { get; set; }
+        private IDisplayMesh _backgroundMesh = null;
+        private IDisplayMesh _foregroundMesh = null;
 
         [Export(PropertyHint.Range, "0,10,1,allow_greater,allow_lesser")]
         private uint _nReservedLayers = 1;

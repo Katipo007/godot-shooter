@@ -3,16 +3,16 @@
 [ext_resource path="res://src/phios/Display.cs" type="Script" id=1]
 [ext_resource path="res://assets/fonts/source_code_pro/source_code_pro.tres" type="Resource" id=2]
 
-[sub_resource type="Curve" id=1]
-_data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
-
-[sub_resource type="SpatialMaterial" id=2]
+[sub_resource type="SpatialMaterial" id=1]
 render_priority = -1
 flags_transparent = true
 flags_unshaded = true
 flags_do_not_receive_shadows = true
 flags_disable_ambient_light = true
 vertex_color_use_as_albedo = true
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), 1.0, 0.0, 1, 0 ]
 
 [sub_resource type="Environment" id=3]
 background_energy = 0.0
@@ -25,10 +25,10 @@ extents = Vector3( 2, 1.58824, 0.05 )
 script = ExtResource( 1 )
 Font = ExtResource( 2 )
 DisplayHeight = 30
-ColorLerpCurve = SubResource( 1 )
-_quadScale = 0.05
-BackgroundMaterial = SubResource( 2 )
+BackgroundMaterial = SubResource( 1 )
 _nInitialLayers = 1
+ColorLerpCurve = SubResource( 2 )
+_quadScale = 0.05
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -1.58824, 0.5 )
