@@ -224,15 +224,20 @@ namespace Phios
             return _nLayers;
         }
 
-        public Cell GetCell(int layer, int x, int y)
+        public Cell GetCell(int layer, int x, int y, bool createIfNeeded = true)
         {
             // get layer cells, add if not already exists
             Cell[, ] layerCells = null;
             if (!_cells.TryGetValue(layer, out layerCells))
             {
-                layerCells = new Cell[DisplayWidth, DisplayHeight];
-                _cells.Add(layer, layerCells);
-                _nLayers = Mathf.Max(layer + 1, _nLayers);
+                if (createIfNeeded)
+                {
+                    layerCells = new Cell[DisplayWidth, DisplayHeight];
+                    _cells.Add(layer, layerCells);
+                    _nLayers = Mathf.Max(layer + 1, _nLayers);
+                }
+                else
+                    return null;
             }
 
             // get cell, add if not already exists
@@ -241,7 +246,10 @@ namespace Phios
                 Cell cell = layerCells[x, y];
                 if (cell == null)
                 {
-                    cell = layerCells[x, y] = CreateCell(layer, x, y);
+                    if (createIfNeeded)
+                        cell = layerCells[x, y] = CreateCell(layer, x, y);
+                    else
+                        return null;
                 }
 
                 return cell;
