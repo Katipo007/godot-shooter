@@ -53,7 +53,7 @@ namespace Phios
         /// </summary>
         /// <typeparam name="Cell"></typeparam>
         /// <returns></returns>
-        private SC.LinkedList<Cell> _updatedCells = new SC.LinkedList<Cell>();
+        private SC.Queue<Cell> _updatedCells = new SC.Queue<Cell>();
         private Vector3 zero3 = Vector3.Zero;
         private Vector2 zero2 = Vector2.Zero;
 
@@ -223,7 +223,7 @@ namespace Phios
             cell.Position = new Vector2(x, y);
             cell.Owner = this;
             _cellList.AddLast(cell);
-            _updatedCells.AddLast(cell);
+            _updatedCells.Enqueue(cell);
             return cell;
         }
 
@@ -333,7 +333,7 @@ namespace Phios
 
         public void MarkCellAsUpdated(Cell c)
         {
-            _updatedCells.AddLast(c);
+            _updatedCells.Enqueue(c);
         }
 
         public SC.LinkedList<int> GetTopLayersForCell(int x, int y)
@@ -389,13 +389,14 @@ namespace Phios
             // update display meshes
             if (_updatedCells.Count > 0)
             {
-                var currentCell = _updatedCells.First;
+                Cell currentCell;
                 Vector2 pos;
                 int x, y;
-                while (currentCell != null)
+                while (_updatedCells.Count > 0)
                 {
+                    currentCell = _updatedCells.Dequeue();
                     // get cell position
-                    pos = currentCell.Value.Position;
+                    pos = currentCell.Position;
                     x = (int) pos.x;
                     y = (int) pos.y;
 
@@ -439,11 +440,7 @@ namespace Phios
                             Background.MeshColors[vert] = cell.BackgroundColor;
                         }
                     }
-
-                    // move to the next updated cell
-                    currentCell = currentCell.Next;
                 }
-                _updatedCells.Clear();
 
                 // apply display mesh updates
                 Background.UpdateMesh();
