@@ -206,17 +206,6 @@ namespace Phios
                 _cells.Add(layerIndex, layer);
             }
             _nLayers = _nInitialLayers;
-            GetCell(0, 1, 1).SetContent("H", Colors.White, Colors.Black);
-            GetCell(0, 2, 1).SetContent("e", Colors.White, Colors.Black);
-            GetCell(0, 3, 1).SetContent("l", Colors.White, Colors.Black);
-            GetCell(0, 4, 1).SetContent("l", Colors.White, Colors.Black);
-            GetCell(0, 5, 1).SetContent("o", Colors.White, Colors.Black);
-
-            GetCell(0, 0, 0).SetContent("X", Colors.Red, Colors.Black);
-            GetCell(0, 1, 0).SetContent(".", Colors.White, Colors.Red);
-            GetCell(0, 0, 1).SetContent(".", Colors.White, Colors.Red);
-
-            GetCell(0, DisplayWidth - 1, DisplayHeight - 1).SetContent("X", Colors.Red, Colors.Black);
         }
 
         private Cell CreateCell(int layerIndex, int x, int y)
