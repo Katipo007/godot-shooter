@@ -33,10 +33,7 @@ namespace Phios
             get { return _position; }
             set
             {
-                _position.Set(
-                    value.x.Clamp(0, Display.DisplayWidth),
-                    value.y.Clamp(0, Display.DisplayHeight)
-                );
+                _position = new Vector2(value.x.Clamp(0, Display.DisplayWidth), value.y.Clamp(0, Display.DisplayHeight));
             }
         }
 
@@ -88,9 +85,7 @@ namespace Phios
                 return;
 
             // clamp mouse position to bounds
-            _position.Set(
-                Utils.Clamp(_position.x, Display.DisplayWidth * ScreenMin.x, Display.DisplayWidth * ScreenMax.x - 1),
-                Utils.Clamp(_position.y, Display.DisplayHeight * ScreenMin.y, Display.DisplayHeight * ScreenMax.y - 1));
+            _position = new Vector2(Utils.Clamp(_position.x, Display.DisplayWidth * ScreenMin.x, Display.DisplayWidth * ScreenMax.x - 1), Utils.Clamp(_position.y, Display.DisplayHeight * ScreenMin.y, Display.DisplayHeight * ScreenMax.y - 1));
 
             // clear current cell
             if (_currentCell != null)

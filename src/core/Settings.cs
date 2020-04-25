@@ -18,11 +18,11 @@ public class Settings
         {
             GD.Print("Creating settings file from default...");
             File defaultFile = new File();
-            defaultFile.Open("res://data/default_settings.json", (int) File.ModeFlags.Read);
+            defaultFile.Open("res://data/default_settings.json", File.ModeFlags.Read);
             var defaultContents = defaultFile.GetAsText();
             defaultFile.Close();
 
-            file.Open(Filepath, (int) File.ModeFlags.Write);
+            file.Open(Filepath, File.ModeFlags.Write);
             file.StoreString(defaultContents);
             file.Close();
         }

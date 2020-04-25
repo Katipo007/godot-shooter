@@ -92,7 +92,7 @@ public class Player : KinematicBody
 
     public override void _PhysicsProcess(float delta)
     {
-        var head_basis = _head.GetGlobalTransform().basis;
+        var head_basis = _head.GlobalTransform.basis;
         var direction = new Vector3();
 
         // if we aren't trying to use a Phios mouse allow movement

@@ -150,7 +150,7 @@ namespace Phios
 
             // initialize collision shape
             CollisionShape collisionShape = GetNode<CollisionShape>("StaticBody/CollisionShape");
-            (collisionShape.Shape as BoxShape).SetExtents(new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * _quadHeight * 0.5f, 0.05f));
+            (collisionShape.Shape as BoxShape).Extents = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * _quadHeight * 0.5f, 0.05f);
             collisionShape.Translation = new Vector3(DisplayWidth * _quadWidth * 0.5f, DisplayHeight * -_quadHeight * 0.5f, 0);
 
             // update camera orthographic size

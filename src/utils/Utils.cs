@@ -61,7 +61,7 @@ public static class Utils
     public static void PutJsonFile(GC.Dictionary data, string filepath, bool sort = true)
     {
         File file = new File();
-        Error e = file.Open(filepath, (int) File.ModeFlags.Write);
+        Error e = file.Open(filepath, File.ModeFlags.Write);
 
         if (e != Error.Ok)
         {
@@ -76,7 +76,7 @@ public static class Utils
     public static GC.Dictionary GetJsonFile(string filepath)
     {
         File file = new File();
-        Error e = file.Open(filepath, (int) File.ModeFlags.Read);
+        Error e = file.Open(filepath, File.ModeFlags.Read);
 
         if (e != Error.Ok)
         {

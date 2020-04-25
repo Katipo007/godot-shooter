@@ -35,6 +35,6 @@ public class InteractableLightswitch : Interactable
 
     private void SetLightEnergy()
     {
-        _light.SetParam(Light.Param.Energy, (_on ? _energyWhenOn : _energyWhenOff));
+        _light.LightEnergy = (_on ? _energyWhenOn : _energyWhenOff);
     }
 }
